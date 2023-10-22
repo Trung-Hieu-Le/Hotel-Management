@@ -6,7 +6,8 @@ session_start();
 // page redirect
 $userID="";
 $userID=$_SESSION['userID'];
-if($userID == true){
+$userPhone=$_SESSION['userPhone'];
+if($userID & $userPhone == true){
 
 }else{
   header("location: index.php");
@@ -36,7 +37,7 @@ if($userID == true){
         display: none;
       }
       #guestdetailpanel .middle{
-        height: 450px;
+        height: 540px;
       }
     </style>
 </head>
@@ -83,18 +84,17 @@ if($userID == true){
                 <i class="fa-solid fa-circle-xmark" onclick="closebox()"></i>
             </div>
             <div class="middle">
-                <div class="guestinfo">
-                    <h4>Thông tin khách hàng</h4>
-                    <input type="text" name="Name" placeholder="Họ & tên">
-                    <input type="email" name="Email" placeholder="Email">
-                    <input type="text" name="Address" placeholder="Địa chỉ">
-                    <input type="text" name="Phone" placeholder="Số điện thoại">
-                </div>
-
-                <div class="line"></div>
-
                 <div class="reservationinfo">
-                    <h4>Thông tin đặt phòng</h4>
+                    <!-- <h4>Thông tin đặt phòng</h4> -->
+                    <div class="w-100 d-flex">
+                      <div class="d-flex">
+                        <div class="align-self-center">
+                          SĐT liên hệ:&nbsp;
+                        </div>
+                      </div>
+                      <input style="width:80%" type="text" name="Phone" value=" <?php echo $_SESSION['userPhone']; ?>">
+                    </div>
+
                     <select name="RoomType" class="selectinput">
 						<option value selected >Loại phòng</option>
                         <option value="Superior Room">SUPERIOR ROOM</option>
@@ -133,6 +133,10 @@ if($userID == true){
                             <input name="cout" type ="date">
                         </span>
                     </div>
+                    <input type="text" name="note" placeholder="Ghi chú">
+                    <div style="margin-top: 10px;">
+                      <span>Giá ước tính: </span><div id="price" style="display:inline-block;"></div>
+                    </div>
                 </div>
             </div>
             <div class="footer">
@@ -141,20 +145,19 @@ if($userID == true){
         </form>
 
         <!-- ==== room book php ====-->
+        
         <?php       
             if (isset($_POST['guestdetailsubmit'])) {
-                $Name = $_POST['Name'];
-                $Email = $_POST['Email'];
-                $Country = $_POST['Country'];
                 $Phone = $_POST['Phone'];
                 $RoomType = $_POST['RoomType'];
-                $Bed = $_POST['Bed'];
                 $NoofRoom = $_POST['NoofRoom'];
+                $Bed = $_POST['Bed'];
                 $Meal = $_POST['Meal'];
                 $cin = $_POST['cin'];
                 $cout = $_POST['cout'];
+                $note = $_POST['note'];
 
-                if($Name == "" || $Email == "" || $Country == ""){
+                if($Phone == "" || $NoofRoom == "" || $RoomType == ""){
                     echo "<script>swal({
                         title: 'Fill the proper details',
                         icon: 'error',
@@ -163,10 +166,9 @@ if($userID == true){
                 }
                 else{
                     $sta = "NotConfirm";
-                    $sql = "INSERT INTO roombook(Name,Email,Country,Phone,RoomType,Bed,NoofRoom,Meal,cin,cout,stat,nodays) VALUES ('$Name','$Email','$Country','$Phone','$RoomType','$Bed','$NoofRoom','$Meal','$cin','$cout','$sta',datediff('$cout','$cin'))";
+                    $sql = "INSERT INTO reservation(user_id,phone,room_type,no_room,no_bed,check_in,check_out,no_day,meal,status,note) VALUES ('$userID','$Phone','$RoomType','$NoofRoom','$Bed','$cin','$cout',datediff('$cout','$cin'),'$Meal','$sta','$note')";
                     $result = mysqli_query($conn, $sql);
 
-                    
                         if ($result) {
                             echo "<script>swal({
                                 title: 'Reservation successful',
@@ -280,15 +282,5 @@ if($userID == true){
   </section>
 </body>
 
-<script>
-
-    var bookbox = document.getElementById("guestdetailpanel");
-
-    openbookbox = () =>{
-      bookbox.style.display = "flex";
-    }
-    closebox = () =>{
-      bookbox.style.display = "none";
-    }
-</script>
+<script src="./javascript/home.js"></script>
 </html>

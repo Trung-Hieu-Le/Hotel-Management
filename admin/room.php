@@ -22,7 +22,7 @@ include '../config.php';
 <body>
     <div class="addroomsection">
         <form action="" method="POST">
-            <div class="h-100 py-1">
+            <div class="h-100 py-2">
                 <div class="row h-100">
                     <div class="col-4">
                         <label for="name">Tên phòng:</label>

@@ -5,7 +5,7 @@ include '../config.php';
 // fetch room data
 $id = $_GET['id'];
 
-$sql ="Select * from roombook where id = '$id'";
+$sql ="Select * from reservation where id = '$id'";
 $re = mysqli_query($conn,$sql);
 while($row=mysqli_fetch_array($re))
 {

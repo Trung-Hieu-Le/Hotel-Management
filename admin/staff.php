@@ -28,7 +28,7 @@ include '../config.php';
 <body>
     <div class="addroomsection">
         <form action="" method="POST">
-            <div class="h-100 py-1">
+            <div class="h-100 py-2">
             <div class="row h-100">
                 <div class="col-4">
                     <label for="staffname">Tên :</label>
@@ -47,20 +47,24 @@ include '../config.php';
                     </select>
                 </div>
                 <div class="col-4">
-                    <label for="phone">SĐT :</label>
-                    <input type="text" name="phone" class="form-control">
+                    <label for="address">Địa chỉ :</label>
+                    <input type="text" name="address" class="form-control">
                 </div>
             </div>
             <div class="row h-100">
-                <div class="col-4">
+                <div class="col-3">
+                    <label for="phone">SĐT :</label>
+                    <input type="text" name="phone" class="form-control" style="width:200px">
+                </div>
+                <div class="col-3">
                     <label for="email">Email :</label>
-                    <input type="email" name="email" class="form-control">
+                    <input type="email" name="email" class="form-control" style="width:200px">
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <label for="password">Password :</label>
-                    <input type="password" name="password" class="form-control">
+                    <input type="password" name="password" class="form-control" style="width:200px">
                 </div>
-                <div class="col-4 d-flex align-items-end">
+                <div class="col-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-success" name="addstaff">Thêm nhân viên</button>
                 </div>
             </div>
@@ -71,11 +75,12 @@ include '../config.php';
         if (isset($_POST['addstaff'])) {
             $staffname = $_POST['staffname'];
             $staffrole = $_POST['staffrole'];
+            $address = $_POST['address'];
             $phone = $_POST['phone'];
             $email = $_POST['email'];
             $password = $_POST['password'];
             // TODO: Tránh trùng staff
-            $sql = "INSERT INTO staff(name,role,phone,email,password) VALUES ('$staffname', '$staffrole','$phone','$email','$password')";
+            $sql = "INSERT INTO staff(name,role,address,phone,email,password) VALUES ('$staffname', '$staffrole','$address','$phone','$email','$password')";
             $result = mysqli_query($conn, $sql);
 
             if ($result) {

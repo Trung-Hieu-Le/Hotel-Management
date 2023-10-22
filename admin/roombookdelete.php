@@ -4,7 +4,7 @@ include '../config.php';
 
 $id = $_GET['id'];
 
-$deletesql = "DELETE FROM roombook WHERE id = $id";
+$deletesql = "DELETE FROM reservation WHERE id = $id";
 
 $result = mysqli_query($conn, $deletesql);
 

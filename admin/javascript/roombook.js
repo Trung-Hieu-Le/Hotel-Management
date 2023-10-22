@@ -7,6 +7,11 @@ adduserclose = () => {
     detailpanel.style.display = "none";
 }
 
+function updatePhone() {
+    var phone = $('select[name="User"] option:selected').data('phone');
+    $('#phone-input').val(phone);
+  }
+  
 //search bar logic using js
 const searchFun = () =>{
     let filter = document.getElementById('search_bar').value.toUpperCase();

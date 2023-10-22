@@ -27,7 +27,7 @@ if($stat == "NotConfirm")
 {
     $st = "Confirm";
 
-    $sql = "UPDATE roombook SET stat = '$st' WHERE id = '$id'";
+    $sql = "UPDATE reservation SET status = '$st' WHERE id = '$id'";
     $result = mysqli_query($conn,$sql);
 
     if($result){

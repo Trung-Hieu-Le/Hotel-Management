@@ -64,16 +64,16 @@ session_start();
                 <!-- // ==userlogin== -->
                 <?php 
                 if (isset($_POST['user_login_submit'])) {
-                    $Email = $_POST['email'];
+                    $Phone = $_POST['phone'];
                     $Password = $_POST['password'];
 
-                    $sql = "SELECT * FROM user WHERE email = '$Email' AND password = BINARY'$Password'";
+                    $sql = "SELECT * FROM user WHERE phone = '$Phone' AND password = BINARY'$Password'";
                     $result = mysqli_query($conn, $sql);
 
                     if ($result->num_rows > 0) {
                         $_SESSION['userID']=mysqli_fetch_array($result)['id'];
-                        $_SESSION['userPhone']=mysqli_fetch_array($result)['phone'];
-                        $Email = "";
+                        $_SESSION['userPhone']=$Phone;
+                        $Phone = "";
                         $Password = "";
                         header("Location: home.php");
                     } else {
@@ -91,8 +91,8 @@ session_start();
                         <label for="Username">Username</label>
                     </div> -->
                     <div class="form-floating">
-                        <input typuser_logine="email" class="form-control" name="email" placeholder=" ">
-                        <label for="Email">Email</label>
+                        <input typuser_logine="phone" class="form-control" name="phone" placeholder=" ">
+                        <label for="Phone">Phone</label>
                     </div>
                     <div class="form-floating">
                         <input type="password" class="form-control" name="password" placeholder=" ">
@@ -108,16 +108,16 @@ session_start();
                 <!-- == Emp Login == -->
                 <?php              
                     if (isset($_POST['Emp_login_submit'])) {
-                        $Email = $_POST['emp_email'];
+                        $Phone = $_POST['emp_phone'];
                         $Password = $_POST['emp_password'];
 
-                        $sql = "SELECT * FROM staff WHERE email = '$Email' AND password = BINARY'$Password'";
+                        $sql = "SELECT * FROM staff WHERE phone = '$Phone' AND password = BINARY'$Password'";
                         $result = mysqli_query($conn, $sql);
 
                         if ($result->num_rows > 0) {
                             $_SESSION['userID']=mysqli_fetch_array($result)['id'];
-                            $_SESSION['userPhone']=mysqli_fetch_array($result)['phone'];
-                            $Email = "";
+                            $_SESSION['userPhone']=$Phone;
+                            $Phone = "";
                             $Password = "";
                             header("Location: admin/admin.php");
                         } else {
@@ -131,8 +131,8 @@ session_start();
                 ?> 
                 <form class="employee_login authsection" id="employeelogin" action="" method="POST">
                     <div class="form-floating">
-                        <input type="email" class="form-control" name="emp_email" placeholder=" ">
-                        <label for="floatingInput">Email</label>
+                        <input type="text" class="form-control" name="emp_phone" placeholder=" ">
+                        <label for="floatingInput">Phone</label>
                     </div>
                     <div class="form-floating">
                         <input type="password" class="form-control" name="emp_password" placeholder=" ">
