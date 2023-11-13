@@ -6,8 +6,7 @@ session_start();
 // page redirect
 $userID="";
 $userID=$_SESSION['userID'];
-$userPhone=$_SESSION['userPhone'];
-if($userID & $userPhone == true){
+if($userID == true){
 
 }else{
   header("location: index.php");
@@ -171,13 +170,13 @@ if($userID & $userPhone == true){
 
                         if ($result) {
                             echo "<script>swal({
-                                title: 'Reservation successful',
+                                title: 'Đặt phòng thành công',
                                 icon: 'success',
                             });
                         </script>";
                         } else {
                             echo "<script>swal({
-                                    title: 'Something went wrong',
+                                    title: 'Xin vui lòng thử lại',
                                     icon: 'error',
                                 });
                         </script>";

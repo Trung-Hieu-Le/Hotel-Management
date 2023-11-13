@@ -39,6 +39,7 @@ body {
 }
 
 .addroomsection form{
+    width: 90%;
     height: 100%;
     display: flex;
     justify-content: space-evenly;
@@ -62,7 +63,7 @@ body {
 .room{
     display: flex;
     position: relative;
-    top: 120px;
+    top: 130px;
     height: 85vh;
     overflow-y: scroll;
     justify-content: space-evenly;

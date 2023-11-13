@@ -2,7 +2,33 @@
 session_start();
 include '../config.php';
 ?>
+<?php
+        //Xóa
+        if (isset($_GET['delete'])) {
+        $id = $_GET['delete'];
 
+$userdeletesql = "DELETE FROM user WHERE id = $id";
+
+$result = mysqli_query($conn, $userdeletesql);
+
+header("Location:user.php");
+        }
+        //Thêm
+        if (isset($_POST['adduser'])) {
+            $username = $_POST['username'];
+            $address = $_POST['address'];
+            $phone = $_POST['phone'];
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            // TODO: Tránh trùng user
+            $sql = "INSERT INTO user(name,address,phone,email,password) VALUES ('$username', '$address','$phone','$email','$password')";
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                header("Location: user.php");
+            }
+        }
+        ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,22 +85,7 @@ include '../config.php';
             </div>
         </form>
 
-        <?php
-        if (isset($_POST['adduser'])) {
-            $username = $_POST['username'];
-            $address = $_POST['address'];
-            $phone = $_POST['phone'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            // TODO: Tránh trùng user
-            $sql = "INSERT INTO user(name,address,phone,email,password) VALUES ('$username', '$address','$phone','$email','$password')";
-            $result = mysqli_query($conn, $sql);
-
-            if ($result) {
-                header("Location: staff.php");
-            }
-        }
-        ?>
+        
     </div>
 
 
@@ -83,19 +94,41 @@ include '../config.php';
         $sql = "select * from user";
         $re = mysqli_query($conn, $sql)
         ?>
-        <?php
-        while ($row = mysqli_fetch_array($re)) {
-            echo "<div class='roombox'>
-						<div class='text-center no-boder'>
-                            <img src='../image/icon/user.png' width=80 height=80>
-							<h3>" . $row['name'] . "</h3>
-                            <div class='mb-1'>" . $row['phone'] . "</div>
-                            <a href=''><button class='btn btn-primary'>Sửa</button></a>
-                            <a href='userdelete.php?id=" . $row['id'] . "'><button class='btn btn-danger'>Xóa</button></a>
-						</div>
-                    </div>";
-        }
-        ?>
+        <table class="table table-bordered" id="table-data">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">SĐT</th>
+                    <th scope="col">Địa chỉ</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Password</th>
+                    <th scope="col" class="action">Hành động</th>
+                    <!-- <th>Delete</th> -->
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php
+                while ($res = mysqli_fetch_array($re)) {
+                ?>
+                    <tr style="height:80px;">
+                        <td><?php echo $res['id'] ?></td>
+                        <td><?php echo $res['name'] ?></td>
+                        <td><?php echo $res['phone'] ?></td>
+                        <td><?php echo $res['address'] ?></td>
+                        <td><?php echo $res['email'] ?></td>
+                        <td><?php echo $res['password'] ?></td>
+                        <td class="action">
+                            <a href="useredit.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Sửa</button></a>
+                            <a href="user.php?delete=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc không?')"><button class='btn btn-danger'>Xóa</button></a>
+                        </td>
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
 
 </body>

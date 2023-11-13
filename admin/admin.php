@@ -4,9 +4,9 @@ include '../config.php';
 session_start();
 
 // page redirect
-$userID="";
-$userID=$_SESSION['userID'];
-if($userID == true){
+$staffID="";
+$staffID=$_SESSION['staffID'];
+if($staffID == true){
 
 }else{
   header("location: http://localhost/hotelmanage_system/index.php");
@@ -57,6 +57,7 @@ if($userID == true){
             <li class="pagebtn"><img src="../image/icon/bed.png">&nbsp&nbsp&nbsp Đặt phòng</li>
             <li class="pagebtn"><img src="../image/icon/wallet.png">&nbsp&nbsp&nbsp Thanh toán</li>            
             <li class="pagebtn"><img src="../image/icon/bedroom.png">&nbsp&nbsp&nbsp Phòng</li>
+            <li class="pagebtn"><img src="../image/icon/service.png">&nbsp&nbsp&nbsp Dịch vụ</li>
             <li class="pagebtn"><img src="../image/icon/user.png">&nbsp&nbsp&nbsp Người dùng</li>
             <li class="pagebtn"><img src="../image/icon/staff.png">&nbsp&nbsp&nbsp Nhân viên</li>
         </ul>
@@ -68,6 +69,7 @@ if($userID == true){
         <iframe class="frames frame2" src="./roombook.php" frameborder="0"></iframe>
         <iframe class="frames frame3" src="./payment.php" frameborder="0"></iframe>
         <iframe class="frames frame4" src="./room.php" frameborder="0"></iframe>
+        <iframe class="frames frame4" src="./service.php" frameborder="0"></iframe>
         <iframe class="frames frame4" src="./user.php" frameborder="0"></iframe>
         <iframe class="frames frame4" src="./staff.php" frameborder="0"></iframe>
     </div>

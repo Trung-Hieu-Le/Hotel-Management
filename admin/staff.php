@@ -2,7 +2,35 @@
 session_start();
 include '../config.php';
 ?>
+<?php
+        //Xóa
+        if (isset($_GET['delete'])) {
 
+        $id = $_GET['delete'];
+
+$roomdeletesql = "DELETE FROM staff WHERE id = $id";
+
+$result = mysqli_query($conn, $roomdeletesql);
+
+header("Location:staff.php");
+        }
+        //Thêm
+        if (isset($_POST['addstaff'])) {
+            $staffname = $_POST['staffname'];
+            $staffrole = $_POST['staffrole'];
+            $address = $_POST['address'];
+            $phone = $_POST['phone'];
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            // TODO: Tránh trùng staff
+            $sql = "INSERT INTO staff(name,role,address,phone,email,password) VALUES ('$staffname', '$staffrole','$address','$phone','$email','$password')";
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                header("Location: staff.php");
+            }
+        }
+        ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,14 +64,15 @@ include '../config.php';
                 </div>
                 <div class="col-4">
                     <label for="staffrole">Vị trí :</label>
-                    <select name="staffrole" class="form-control">
-                        <option value selected></option>
-                        <option value="Admin">Admin</option>
-                        <option value="Ban điều hành">Ban điều hành</option>
-                        <option value="Đầu bếp">Đầu bếp</option>
-                        <option value="Lễ tân">Lễ tân</option>
-                        <option value="Tạp vụ">Tạp vụ</option>
-                        <option value="Bảo vệ">Bảo vệ</option>
+                    <select name="Role" class="form-control">
+                        <option value="" disabled>Chọn vị trí</option>
+                        <?php
+                        $roles = array("Admin", "Ban điều hành", "Đầu bếp", "Lễ tân", "Tạp vụ", "Bảo vệ");
+
+                        foreach ($roles as $roleOption) {
+                            echo "<option value='$roleOption'>$roleOption</option>";
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="col-4">
@@ -70,24 +99,6 @@ include '../config.php';
             </div>
             </div>
         </form>
-
-        <?php
-        if (isset($_POST['addstaff'])) {
-            $staffname = $_POST['staffname'];
-            $staffrole = $_POST['staffrole'];
-            $address = $_POST['address'];
-            $phone = $_POST['phone'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            // TODO: Tránh trùng staff
-            $sql = "INSERT INTO staff(name,role,address,phone,email,password) VALUES ('$staffname', '$staffrole','$address','$phone','$email','$password')";
-            $result = mysqli_query($conn, $sql);
-
-            if ($result) {
-                header("Location: staff.php");
-            }
-        }
-        ?>
     </div>
 
 
@@ -96,19 +107,43 @@ include '../config.php';
         $sql = "select * from staff";
         $re = mysqli_query($conn, $sql)
         ?>
-        <?php
-        while ($row = mysqli_fetch_array($re)) {
-            echo "<div class='roombox'>
-						<div class='text-center no-boder'>
-                        <img src='../image/icon/staff.png' width=80 height=80>
-                        <h3>" . $row['name'] . "</h3>
-                            <div class='mb-1'>" . $row['role'] . "</div>
-                            <a href=''><button class='btn btn-primary'>Sửa</button></a>
-                            <a href='staffdelete.php?id=" . $row['id'] . "'><button class='btn btn-danger'>Xóa</button></a>
-						</div>
-                    </div>";
-        }
-        ?>
+        <table class="table table-bordered" id="table-data">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Vị trí</th>
+                    <th scope="col">SĐT</th>
+                    <th scope="col">Địa chỉ</th>
+                    <th scope="col">Email</th>
+                    <!-- <th scope="col">Password</th> -->
+                    <th scope="col" class="action">Hành động</th>
+                    <!-- <th>Delete</th> -->
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php
+                while ($res = mysqli_fetch_array($re)) {
+                ?>
+                    <tr style="height:80px;">
+                        <td><?php echo $res['id'] ?></td>
+                        <td><?php echo $res['name'] ?></td>
+                        <td><?php echo $res['role'] ?></td>
+                        <td><?php echo $res['phone'] ?></td>
+                        <td><?php echo $res['address'] ?></td>
+                        <td><?php echo $res['email'] ?></td>
+                      
+                        <td class="action">
+                            <a href="staffedit.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Sửa</button></a>
+                            <a href="staff.php?delete=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc không?')"><button class='btn btn-danger'>Xóa</button></a>
+                        </td>
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
 
 </body>

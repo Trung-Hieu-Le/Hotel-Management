@@ -115,7 +115,7 @@ session_start();
                         $result = mysqli_query($conn, $sql);
 
                         if ($result->num_rows > 0) {
-                            $_SESSION['userID']=mysqli_fetch_array($result)['id'];
+                            $_SESSION['staffID']=mysqli_fetch_array($result)['id'];
                             $_SESSION['userPhone']=$Phone;
                             $Phone = "";
                             $Password = "";
@@ -155,7 +155,7 @@ session_start();
 
                     if($Username == "" || $Email == "" || $Password == ""){
                         echo "<script>swal({
-                            title: 'Fill the proper details',
+                            title: 'Hãy nhập đầy đủ thông tin',
                             icon: 'error',
                         });
                         </script>";
@@ -209,7 +209,7 @@ session_start();
                 <form class="user_signup" id="usersignup" action="" method="POST">
                     <div class="form-floating">
                         <input type="text" class="form-control" name="username" placeholder=" ">
-                        <label for="Username">Username</label>
+                        <label for="Username">Tên</label>
                     </div>
                     <div class="form-floating">
                         <input type="text" class="form-control" name="address" placeholder=" ">

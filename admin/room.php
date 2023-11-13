@@ -2,7 +2,33 @@
 session_start();
 include '../config.php';
 ?>
+<?php
+                // Xử lý xóa phòng
+                if (isset($_GET['delete'])) {
+                    $id = $_GET['delete'];
+                    $roomdeletesql = "DELETE FROM room WHERE id = $id";
+                    $result = mysqli_query($conn, $roomdeletesql);
+                    if ($result) {
+                        header("Location: room.php");
+                    }
+                }
 
+// Xử lý thêm phòng
+        if (isset($_POST['addroom'])) {
+            $typeofroom = $_POST['troom'];
+            $name = $_POST['name'];
+            $typeofbed = $_POST['bed'];
+            $status = $_POST['status'];
+            $note = $_POST['note'];
+            // TODO: Kiểm tra tên phòng
+            $sql = "INSERT INTO room(type_id,name,no_bed,note,status) VALUES ('$typeofroom','$name','$typeofbed','$note','$status')";
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                header("Location: room.php");
+            }
+        }
+        ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,26 +59,31 @@ include '../config.php';
                         <label for="troom">Loại phòng :</label>
                         <select name="troom" class="form-control">
                             <option value selected></option>
-                            <option value="Superior Room">SUPERIOR ROOM</option>
-                            <option value="Deluxe Room">DELUXE ROOM</option>
-                            <option value="Guest House">GUEST HOUSE</option>
-                            <option value="Single Room">SINGLE ROOM</option>
-                        </select>
+                        <?php
+                        $roomtypesql = "SELECT id, name FROM room_type";
+                        $roomtyperesult = mysqli_query($conn, $roomtypesql);
+                        if (mysqli_num_rows($roomtyperesult) > 0) {
+                            while ($row = mysqli_fetch_assoc($roomtyperesult)) {
+                                echo "<option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
+                            }
+                        }
+                        ?>
+                        </select>                        
                     </div>
                     <div class="col-4">
                         <label for="bed">Số giường:</label>
                         <select name="bed" class="form-control">
                             <option value selected></option>
-                            <option value="Đơn">Đơn</option>
-                            <option value="Đôi">Đôi</option>
-                            <option value="Ba">Ba</option>
-                            <option value="Bốn">Bốn</option>
+                            <option value="1">Đơn</option>
+                            <option value="2">Đôi</option>
+                            <option value="3">Ba</option>
+                            <option value="4">Bốn</option>
                             <!-- <option value="Triple">None</option> -->
                         </select>
                     </div>
                 </div>
                 <div class="row h-100">
-                <div class="col-4">
+                    <div class="col-4">
                         <label for="status">Trạng thái:</label>
                         <select name="status" class="form-control">
                             <option value="1" selected>Hoạt động</option>
@@ -69,58 +100,48 @@ include '../config.php';
                 </div>
             </div>
         </form>
-
-        <?php
-        if (isset($_POST['addroom'])) {
-            $typeofroom = $_POST['troom'];
-            $name = $_POST['name'];
-            $typeofbed = $_POST['bed'];
-            $status = $_POST['status'];
-            $note = $_POST['note'];
-            // TODO: Kiểm tra tên phòng
-            $sql = "INSERT INTO room(type,name,no_bed,note,status) VALUES ('$typeofroom','$name','$typeofbed','$note','$status')";
-            $result = mysqli_query($conn, $sql);
-
-            if ($result) {
-                header("Location: room.php");
-            }
-        }
-        ?>
     </div>
 
     <div class="room">
         <?php
-        $sql = "select * from room";
+        $sql = "select room.*, room_type.name as roomtype from room JOIN room_type ON room.type_id = room_type.id ORDER BY id";
         $re = mysqli_query($conn, $sql)
         ?>
-        <?php
-        while ($row = mysqli_fetch_array($re)) {
-            $roomType = $row['type'];
-            $beds = "Giường " . $row['no_bed'];
-            if ($row['status'] == 1) {
-                $nameColor = "text-success";
-            } else {
-                $nameColor = "text-danger";
-            }
-            $roombox = "<div class='text-center no-boder'>
-                                <i class='fa-solid fa-bed fa-4x mb-2'></i>
-                                <h3 class='fw-bolder " . $nameColor . "'>" . $row['name'] . "</h3>
-                                <h3>" . $row['type'] . "</h3>
-                                <div class='mb-1'>" . $beds . "</div>
-                                <a href=''><button class='btn btn-primary'>Sửa</button></a>
-                                <a href='roomdelete.php?id=" . $row['id'] . "'><button class='btn btn-danger'>Xóa</button></a>
-                            </div>";
-            if ($roomType == "Superior Room") {
-                echo "<div class='roombox roomboxsuperior'>" . $roombox . "</div>";
-            } else if ($roomType == "Deluxe Room") {
-                echo "<div class='roombox roomboxdelux'>" . $roombox . "</div>";
-            } else if ($roomType == "Guest House") {
-                echo "<div class='roombox roomboguest'>" . $roombox . "</div>";
-            } else if ($roomType == "Single Room") {
-                echo "<div class='roombox roomboxsingle'>" . $roombox . "</div>";
-            }
-        }
-        ?>
+        <table class="table table-bordered" id="table-data">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Tên phòng</th>
+                    <th scope="col">Loại phòng</th>
+                    <th scope="col">Số giường</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Ghi chú</th>
+                    <th scope="col" class="action">Hành động</th>
+                    <!-- <th>Delete</th> -->
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php
+                while ($res = mysqli_fetch_array($re)) {
+                ?>
+                    <tr style="height:80px;">
+                        <td><?php echo $res['id'] ?></td>
+                        <td><?php echo $res['name'] ?></td>
+                        <td><?php echo $res['roomtype'] ?></td>
+                        <td><?php echo $res['no_bed'] ?></td>
+                        <td><?php echo $res['status'] == 0 ? 'Không hoạt động' : 'Hoạt động'; ?></td> 
+                        <td><?php echo $res['note'] ?></td>
+                        <td class="action">
+                            <a href="roomedit.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Sửa</button></a>
+                            <a href="room.php?delete=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc không?')"><button class='btn btn-danger'>Xóa</button></a>
+                        </td>
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
 
 </body>

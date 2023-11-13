@@ -3,7 +3,7 @@
     include '../config.php';
 
     // roombook
-    $roombooksql ="Select * from roombook";
+    $roombooksql ="Select * from reservation";
     $roombookre = mysqli_query($conn, $roombooksql);
     $roombookrow = mysqli_num_rows($roombookre);
 
