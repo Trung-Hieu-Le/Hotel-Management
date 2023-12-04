@@ -32,13 +32,52 @@ if($userID == true){
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link rel="stylesheet" href="./admin/css/roombook.css">
     <style>
-      #guestdetailpanel{
+      #guestdetailpanel #guestdetail{
         display: none;
       }
       #guestdetailpanel .middle{
         height: 540px;
       }
+	  #guestdetail{
+        display: none;
+		height: 540px;
+      }
+	#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 1580px;
+  height: 300px;
+  padding: 12px;
+	}
+  #customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+  background-color: #f2f2f2;
+}
+
+
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+ text-align: center;
+  background-color: #007BFF;
+  color: white;
+}
+table, th, td {
+  border: 1px solid;
+  padding: 12px;
+}
+.container {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
     </style>
+
+
+
 </head>
 
 <body>
@@ -74,9 +113,8 @@ if($userID == true){
         <div class="welcomeline">
           <h2 class="welcometag">Chào mừng đến với Sparrow Hotel</h2>
         </div>
-
-      <!-- bookbox -->
-      <div id="guestdetailpanel">
+<!--bookbox-->
+     <div id="guestdetailpanel">
         <form action="" method="POST" class="guestdetailpanelform">
             <div class="head">
                 <h3>ĐẶT PHÒNG</h3>
@@ -85,7 +123,7 @@ if($userID == true){
             <div class="middle">
                 <div class="reservationinfo">
                     <!-- <h4>Thông tin đặt phòng</h4> -->
-                    <div class="w-100 d-flex">
+			<div class="w-100 d-flex">
                       <div class="d-flex">
                         <div class="align-self-center">
                           SĐT liên hệ:&nbsp;
@@ -142,7 +180,8 @@ if($userID == true){
                 <button class="btn btn-success" name="guestdetailsubmit">Hoàn thành</button>
             </div>
         </form>
-
+		
+		
         <!-- ==== room book php ====-->
         
         <?php       
@@ -188,7 +227,42 @@ if($userID == true){
 
     </div>
   </section>
-    
+	<div class="container">
+			<div class="check">
+			
+                    
+						<span class="check-in-out-button">
+                            <label for="cin">Nhận phòng</label>
+                            
+							<input name="cin" type ="date">
+                        </span>
+                        <span class="check-in-out-button">
+                            <label for="cin"> Trả phòng</label>
+							<input name="cout" type ="date">
+                        </span>
+		</div>
+		<div class="check-in-out-button">
+		<label >số phòng và số người</label>
+		<select >
+	
+                        <option>1 phòng</option>
+                        <option>2 phòng</option>
+						<option>3 phòng</option>
+						<option>4 phòng</option>
+		
+        </select>
+		<select >
+	
+                        <option>1 người</option>
+                        <option>2 người</option>
+						<option>3 người</option>
+						<option>4 người</option>
+		
+        </select>
+		</div>
+		<button class="btn btn-primary bookbtn">tìm</button>
+	
+	</div>
   <section id="secondsection"> 
     <!-- <img src="./image/homeanimatebg.svg"> -->
     <div class="ourroom">
@@ -205,7 +279,7 @@ if($userID == true){
               <i class="fa-solid fa-dumbbell"></i>
               <i class="fa-solid fa-person-swimming"></i>
             </div>
-            <button class="btn btn-primary bookbtn">Chi tiết</button>
+            <button class="btn btn-primary bookbtn" onclick="openroombox()">Chi tiết</button>
           </div>
         </div>
         <div class="roombox">
@@ -218,7 +292,7 @@ if($userID == true){
               <i class="fa-solid fa-spa"></i>
               <i class="fa-solid fa-dumbbell"></i>
             </div>
-            <button class="btn btn-primary bookbtn">Chi tiết</button>
+            <button class="btn btn-primary bookbtn" onclick="openroombox()" >Chi tiết</button>
           </div>
         </div>
         <div class="roombox">
@@ -230,7 +304,7 @@ if($userID == true){
               <i class="fa-solid fa-burger"></i>
               <i class="fa-solid fa-spa"></i>
             </div>
-            <button class="btn btn-primary bookbtn">Chi tiết</button>
+            <button class="btn btn-primary bookbtn"  onclick="openroombox()">Chi tiết</button>
           </div>
         </div>
         <div class="roombox">
@@ -241,14 +315,55 @@ if($userID == true){
               <i class="fa-solid fa-wifi"></i>
               <i class="fa-solid fa-burger"></i>
             </div>
-            <button class="btn btn-primary bookbtn">Chi tiết</button>
-          </div>
+            <button class="btn btn-primary bookbtn" onclick="openroombox()">Chi tiết</button>
+         
+			</div>
         </div>
-      </div>
-      <div class="d-flex justify-content-center">
+	</div>
+	 
+		<div class="d-flex justify-content-center">
     <button class="btn btn-primary bookbtn" onclick="openbookbox()">Đặt phòng</button>
-    </div>
-    </div>
+	</div>
+	<!--roombox-->
+<div id="guestdetail" >
+        <form action="" method="POST" class="guestdetailform">
+            <div class="head" >
+                <h3>chi tiết</h3>
+                <i class="fa-solid fa-circle-xmark" onclick="closebox1()"></i>
+            </div>
+
+            <table id="customers" border=1 align="center" >
+				<tr>
+					<th>room type</th>
+					<th>room description</th>
+					<th>room price</th>
+				</tr>
+				<?php
+                        $sql ="SELECT * FROM room_type";
+                        $result = $conn->query($sql) or die("Can't get recordset");
+                        if($result->num_rows>=0){
+                            while($row = $result->fetch_assoc()){
+                                ?>
+				<tr>
+					<td><?php echo $row["name"];?></td>
+                    <td><?php echo $row["description"];?></td>
+                    <td><?php echo $row["price"];?> $</td>
+				</tr>
+				 <?php 
+				   }
+                        } else {
+                            echo "<tr><td colspan=7>Tap ket qua rong</td></tr>";
+                        }
+                        $conn->close();
+                   
+                    ?>
+			</table>
+         
+           
+        </form>  
+	</div>
+
+	
   </section>
 
   <section id="thirdsection">
@@ -281,5 +396,54 @@ if($userID == true){
   </section>
 </body>
 
-<script src="./javascript/home.js"></script>
+<script>
+var bookbox = document.getElementById("guestdetailpanel");
+
+    openbookbox = () =>{
+      bookbox.style.display = "flex";
+    }
+    closebox = () =>{
+      bookbox.style.display = "none";
+    }
+var roombox = document.getElementById("guestdetail");
+
+    openroombox = () =>{
+      roombox.style.display = "flex";
+    }
+    closebox1 = () =>{
+      roombox.style.display = "none";
+    }
+
+
+var price = 0;
+function calculatePrice() {
+  var meal = document.getElementsByName("Meal")[0].value;
+
+  //Sử dụng câu lệnh switch để tính giá tiền tương ứng với từng loại đặt bữa
+  switch (meal) {
+    case "Room only":
+      price = 0;
+      break;
+    case "Breakfast":
+      price = 50;
+      break;
+    case "Half Board":
+      price = 150;
+      break;
+    case "Full Board":
+      price = 70;
+      break;
+    default:
+      price = 0;
+      break;
+  }
+
+  //Hiển thị giá tiền tính được
+  document.getElementById("price").innerHTML = "$" + price.toFixed(2);
+}
+
+//thêm sự kiện onchange vào select "Meal"
+document.getElementsByName("Meal")[0].onchange = calculatePrice;
+
+</script>
 </html>
