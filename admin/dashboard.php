@@ -3,7 +3,9 @@
     include '../config.php';
 
     // roombook
-    $roombooksql ="Select * from roombook";
+    $roombooksql ="Select * from room join chosen_room on chosen_room.room_id=room.id
+                                      join reservation on chosen_room.reservation_id=reservation.id
+                                      where reservation.status=0";
     $roombookre = mysqli_query($conn, $roombooksql);
     $roombookrow = mysqli_num_rows($roombookre);
 
@@ -17,33 +19,19 @@
     $roomre = mysqli_query($conn, $roomsql);
     $roomrow = mysqli_num_rows($roomre);
 
-    // TODO
-    // $chartroom1 = "SELECT * FROM roombook WHERE RoomType='Superior Room'";
-    // $chartroom1re = mysqli_query($conn, $chartroom1);
-    // $chartroom1row = mysqli_num_rows($chartroom1re);
+    // TODO: sửa các select - status, searchfun, chart,
 
-    // $chartroom2 = "SELECT * FROM roombook WHERE RoomType='Deluxe Room'";
-    // $chartroom2re = mysqli_query($conn, $chartroom2);
-    // $chartroom2row = mysqli_num_rows($chartroom2re);
-
-    // $chartroom3 = "SELECT * FROM roombook WHERE RoomType='Guest House'";
-    // $chartroom3re = mysqli_query($conn, $chartroom3);
-    // $chartroom3row = mysqli_num_rows($chartroom3re);
-
-    // $chartroom4 = "SELECT * FROM roombook WHERE RoomType='Single Room'";
-    // $chartroom4re = mysqli_query($conn, $chartroom4);
-    // $chartroom4row = mysqli_num_rows($chartroom4re);
 ?>
 <!-- moriss profit -->
 <?php 	
-					$query = "SELECT * FROM payment";
+					$query = "SELECT payment.* FROM payment ORDER BY created_at";
 					$result = mysqli_query($conn, $query);
 					$chart_data = '';
 					$tot = 0;
 					while($row = mysqli_fetch_array($result))
 					{
-              $chart_data .= "{ date:'".$row["cout"]."', profit:".$row["finaltotal"]*10/100 ."}, ";
-              $tot = $tot + $row["finaltotal"]*10/100;
+              $chart_data .= "{ date:'".date('d-m-Y', strtotime($row["created_at"]))."', profit:".$row["final_total"] ."}, ";
+              $tot = $tot + $row["final_total"];
 					}
 
 					$chart_data = substr($chart_data, 0, -2);
@@ -84,10 +72,10 @@
         </div>
     </div>
     <div class="chartbox">
-        <div class="bookroomchart">
+        <!-- <div class="bookroomchart">
             <canvas id="bookroomchart"></canvas>
             <h3 style="text-align: center;margin:10px 0;">Các phòng được đặt</h3>
-        </div>
+        </div> -->
         <div class="profitchart" >
             <div id="profitchart"></div>
             <h3 style="text-align: center;margin:10px 0;">Doanh thu</h3>
@@ -97,7 +85,7 @@
 
 
 
-<script>
+<!-- <script>
         const labels = [
           'Superior Room',
           'Deluxe Room',
@@ -129,7 +117,7 @@
       const myChart = new Chart(
       document.getElementById('bookroomchart'),
       doughnutchart);
-</script>
+</script> -->
 
 <script>
 Morris.Bar({

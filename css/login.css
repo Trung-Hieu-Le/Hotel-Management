@@ -186,6 +186,21 @@ section {
     animation: screen_animation .4s;
 }
 
+/* change_password */
+#change_password{
+    height: 100%;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user_change_password{
+    width: 70%;
+    text-align: center;
+    animation: screen_animation .4s;
+}
+
 /* animation frame */
 @keyframes screen_animation {
     0%{

@@ -14,24 +14,29 @@ function updatePhone() {
   
 //search bar logic using js
 const searchFun = () =>{
-    let filter = document.getElementById('search_bar').value.toUpperCase();
+        const input = document.getElementById('search_bar');
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById('table-data');
+        const tr = table.getElementsByTagName('tr');
 
-    let myTable = document.getElementById("table-data");
+        for (let i = 1; i < tr.length; i++) {
+            let rowVisible = false;
+            const td = tr[i].getElementsByTagName('td');
 
-    let tr = myTable.getElementsByTagName('tr');
+            for (let j = 0; j < td.length-1; j++) {
+                const cellText = td[j].textContent || td[j].innerText;
 
-    for(var i = 0; i< tr.length;i++){
-        let td = tr[i].getElementsByTagName('td')[1];
+                if (cellText.toUpperCase().indexOf(filter) > -1) {
+                    rowVisible = true;
+                    break;
+                }
+            }
 
-        if(td){
-            let textvalue = td.textContent || td.innerHTML;
-
-            if(textvalue.toUpperCase().indexOf(filter) > -1){
-                tr[i].style.display = "";
-            }else{
-                tr[i].style.display = "none";
+            if (rowVisible) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
             }
         }
-    }
 
 }

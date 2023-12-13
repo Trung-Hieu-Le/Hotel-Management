@@ -1,286 +1,218 @@
-<?php
+  <?php include 'header.php' ?>
 
-include 'config.php';
-session_start();
-
-// page redirect
-$userID="";
-$userID=$_SESSION['userID'];
-$userPhone=$_SESSION['userPhone'];
-if($userID & $userPhone == true){
-
-}else{
-  header("location: index.php");
-}
-
-?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/home.css">
-    <title>Sparrow Hotel</title>
-    <!-- boot -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <!-- fontowesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <!-- sweet alert -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="./admin/css/roombook.css">
-    <style>
-      #guestdetailpanel{
-        display: none;
-      }
-      #guestdetailpanel .middle{
-        height: 540px;
-      }
-    </style>
-</head>
-
-<body>
-  <nav class="header bg-white py-2" style="box-shadow: 0 10px 10px 0 rgba(200,200,200,0.3);">
-    <div class="logo">
-      <img class="bluebirdlogo" src="./image/bluebirdlogo.png" alt="logo">
-      <p>SPARROW HOTEL</p>
-    </div>
-    <ul>
-      <li><a href="#firstsection">Trang chủ</a></li>
-      <li><a href="#secondsection">Phòng</a></li>
-      <li><a href="#thirdsection">Trang thiết bị</a></li>
-      <li><a href="#contactus">Liên hệ</a></li>
-      <li><a href="./logout.php"><button class="btn btn-danger">Đăng xuất</button></a></li>
-    </ul>
-  </nav>
-
-  <section id="firstsection" class="carousel slide carousel_section" data-bs-ride="carousel">
-    <div class="carousel-inner">
+  <body>
+    <section id="firstsection" class="carousel slide carousel_section" data-bs-ride="carousel">
+      <div class="carousel-inner">
         <div class="carousel-item active">
-            <img class="carousel-image" src="./image/hotel1.jpg">
+          <img class="carousel-image" src="./image/hotel1.jpg">
         </div>
         <div class="carousel-item">
-            <img class="carousel-image" src="./image/hotel2.jpg">
+          <img class="carousel-image" src="./image/hotel2.jpg">
         </div>
         <div class="carousel-item">
-            <img class="carousel-image" src="./image/hotel3.jpg">
+          <img class="carousel-image" src="./image/hotel3.jpg">
         </div>
         <div class="carousel-item">
-            <img class="carousel-image" src="./image/hotel4.jpg">
+          <img class="carousel-image" src="./image/hotel4.jpg">
         </div>
 
         <div class="welcomeline">
           <h2 class="welcometag">Chào mừng đến với Sparrow Hotel</h2>
         </div>
 
-      <!-- bookbox -->
-      <div id="guestdetailpanel">
-        <form action="" method="POST" class="guestdetailpanelform">
-            <div class="head">
-                <h3>ĐẶT PHÒNG</h3>
-                <i class="fa-solid fa-circle-xmark" onclick="closebox()"></i>
-            </div>
-            <div class="middle">
-                <div class="reservationinfo">
-                    <!-- <h4>Thông tin đặt phòng</h4> -->
-                    <div class="w-100 d-flex">
-                      <div class="d-flex">
-                        <div class="align-self-center">
-                          SĐT liên hệ:&nbsp;
-                        </div>
-                      </div>
-                      <input style="width:80%" type="text" name="Phone" value=" <?php echo $_SESSION['userPhone']; ?>">
-                    </div>
+        <?php
+        if (isset($_POST['guestdetailsubmit'])) {
+          $Phone = $_POST['Phone'];
+          $RoomType = $_POST['RoomType'];
+          $NoofRoom = $_POST['NoofRoom'];
+          $Bed = $_POST['Bed'];
+          $Meal = $_POST['Meal'];
+          $cin = $_POST['cin'];
+          $cout = $_POST['cout'];
+          $note = $_POST['note'];
 
-                    <select name="RoomType" class="selectinput">
-						<option value selected >Loại phòng</option>
-                        <option value="Superior Room">SUPERIOR ROOM</option>
-                        <option value="Deluxe Room">DELUXE ROOM</option>
-						<option value="Guest House">GUEST HOUSE</option>
-						<option value="Single Room">SINGLE ROOM</option>
-                    </select>
-                    <select name="Bed" class="selectinput">
-						<option value selected >Số giường</option>
-                        <option value="Đơn">Đơn</option>
-                        <option value="Đôi">Đôi</option>
-						            <option value="Ba">Ba</option>
-                        <option value="Bốn">Bốn</option>
-						          <!-- <option value="None">None</option> -->
-                    </select>
-                    <select name="NoofRoom" class="selectinput">
-						<option value selected >Số phòng</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                    <select name="Meal" class="selectinput">
-						<option value selected >Đặt bữa</option>
-                        <option value="Room only">Room only</option>
-                        <option value="Breakfast">Breakfast</option>
-						<option value="Half Board">Half Board</option>
-						<option value="Full Board">Full Board</option>
-					</select>
-                    <div class="datesection">
-                        <span>
-                            <label for="cin">Ngày đến</label>
-                            <input name="cin" type ="date">
-                        </span>
-                        <span>
-                            <label for="cin">Ngày đi</label>
-                            <input name="cout" type ="date">
-                        </span>
-                    </div>
-                    <input type="text" name="note" placeholder="Ghi chú">
-                    <div style="margin-top: 10px;">
-                      <span>Giá ước tính: </span><div id="price" style="display:inline-block;"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <button class="btn btn-success" name="guestdetailsubmit">Hoàn thành</button>
-            </div>
-        </form>
-
-        <!-- ==== room book php ====-->
-        
-        <?php       
-            if (isset($_POST['guestdetailsubmit'])) {
-                $Phone = $_POST['Phone'];
-                $RoomType = $_POST['RoomType'];
-                $NoofRoom = $_POST['NoofRoom'];
-                $Bed = $_POST['Bed'];
-                $Meal = $_POST['Meal'];
-                $cin = $_POST['cin'];
-                $cout = $_POST['cout'];
-                $note = $_POST['note'];
-
-                if($Phone == "" || $NoofRoom == "" || $RoomType == ""){
-                    echo "<script>swal({
-                        title: 'Fill the proper details',
+          if ($Phone == "" || $NoofRoom == "" || $RoomType == "") {
+            echo "<script>swal({
+                        title: 'Điền đầy đủ thông tin',
                         icon: 'error',
                     });
                     </script>";
-                }
-                else{
-                    $sta = "NotConfirm";
-                    $sql = "INSERT INTO reservation(user_id,phone,room_type,no_room,no_bed,check_in,check_out,no_day,meal,status,note) VALUES ('$userID','$Phone','$RoomType','$NoofRoom','$Bed','$cin','$cout',datediff('$cout','$cin'),'$Meal','$sta','$note')";
-                    $result = mysqli_query($conn, $sql);
+          } else {
+            $sta = "NotConfirm";
+            $sql = "INSERT INTO reservation(user_id,phone,room_type,no_room,no_bed,check_in,check_out,no_day,meal,status,note) VALUES ('$userID','$Phone','$RoomType','$NoofRoom','$Bed','$cin','$cout',datediff('$cout','$cin')+1a,'$Meal','$sta','$note')";
+            $result = mysqli_query($conn, $sql);
 
-                        if ($result) {
-                            echo "<script>swal({
-                                title: 'Reservation successful',
+            if ($result) {
+              echo "<script>swal({
+                                title: 'Đặt phòng thành công',
                                 icon: 'success',
                             });
                         </script>";
-                        } else {
-                            echo "<script>swal({
-                                    title: 'Something went wrong',
+            } else {
+              echo "<script>swal({
+                                    title: 'Xin vui lòng thử lại',
                                     icon: 'error',
                                 });
                         </script>";
-                        }
-                }
             }
-            ?>
-          </div>
+          }
+        }
+        ?>
+      </div>
 
-    </div>
-  </section>
-    
-  <section id="secondsection"> 
-    <!-- <img src="./image/homeanimatebg.svg"> -->
-    <div class="ourroom">
-      <h1 class="head"><< Phòng >></h1>
-      <div class="roomselect">
-        <div class="roombox">
-          <div class="hotelphoto h1"></div>
-          <div class="roomdata">
-            <h2>Superior Room</h2>
-            <div class="services">
-              <i class="fa-solid fa-wifi"></i>
-              <i class="fa-solid fa-burger"></i>
-              <i class="fa-solid fa-spa"></i>
-              <i class="fa-solid fa-dumbbell"></i>
-              <i class="fa-solid fa-person-swimming"></i>
+      </div>
+    </section>
+
+    <section id="secondsection">
+      <!-- <img src="./image/homeanimatebg.svg"> -->
+      <div class="ourroom">
+        <h1 class="head">
+          << Phòng>>
+        </h1>
+        <div class="roomselect">
+          <div class="roombox">
+            <div class="hotelphoto h1" style="background-image: url(./image/hotel1photo.webp);"></div>
+            <div class="roomdata">
+              <h2>Superior Room</h2>
+              <div class="services">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-burger"></i>
+                <i class="fa-solid fa-spa"></i>
+                <i class="fa-solid fa-dumbbell"></i>
+                <i class="fa-solid fa-person-swimming"></i>
+              </div>
+              <button class="btn btn-primary bookbtn">Chi tiết</button>
             </div>
-            <button class="btn btn-primary bookbtn">Chi tiết</button>
+          </div>
+          <div class="roombox">
+            <div class="hotelphoto h2" style="background-image: url(./image/hotel2photo.jpg);"></div>
+            <div class="roomdata">
+              <h2>Delux Room</h2>
+              <div class="services">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-burger"></i>
+                <i class="fa-solid fa-spa"></i>
+                <i class="fa-solid fa-dumbbell"></i>
+              </div>
+              <button class="btn btn-primary bookbtn">Chi tiết</button>
+            </div>
+          </div>
+          <div class="roombox">
+            <div class="hotelphoto h3" style="background-image: url(./image/hotel3photo.avif);"></div>
+            <div class="roomdata">
+              <h2>Guest Room</h2>
+              <div class="services">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-burger"></i>
+                <i class="fa-solid fa-spa"></i>
+              </div>
+              <button class="btn btn-primary bookbtn">Chi tiết</button>
+            </div>
+          </div>
+          <div class="roombox">
+            <div class="hotelphoto h4" style="background-image: url(./image/hotel4photo.jpg);"></div>
+            <div class="roomdata">
+              <h2>Single Room</h2>
+              <div class="services">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-burger"></i>
+              </div>
+              <button class="btn btn-primary bookbtn">Chi tiết</button>
+            </div>
           </div>
         </div>
-        <div class="roombox">
-          <div class="hotelphoto h2"></div>
-          <div class="roomdata">
-            <h2>Delux Room</h2>
-            <div class="services">
-              <i class="fa-solid fa-wifi"></i>
-              <i class="fa-solid fa-burger"></i>
-              <i class="fa-solid fa-spa"></i>
-              <i class="fa-solid fa-dumbbell"></i>
-            </div>
-            <button class="btn btn-primary bookbtn">Chi tiết</button>
-          </div>
-        </div>
-        <div class="roombox">
-          <div class="hotelphoto h3"></div>
-          <div class="roomdata">
-            <h2>Guest Room</h2>
-            <div class="services">
-              <i class="fa-solid fa-wifi"></i>
-              <i class="fa-solid fa-burger"></i>
-              <i class="fa-solid fa-spa"></i>
-            </div>
-            <button class="btn btn-primary bookbtn">Chi tiết</button>
-          </div>
-        </div>
-        <div class="roombox">
-          <div class="hotelphoto h4"></div>
-          <div class="roomdata">
-            <h2>Single Room</h2>
-            <div class="services">
-              <i class="fa-solid fa-wifi"></i>
-              <i class="fa-solid fa-burger"></i>
-            </div>
-            <button class="btn btn-primary bookbtn">Chi tiết</button>
-          </div>
+        <div class="d-flex justify-content-center">
+          <?php if ($userID == true) : ?>
+            <a href="reservation_modal_1.php">
+              <button class="btn btn-primary bookbtn">Đặt phòng</button>
+            </a>
+          <?php else : ?>
+            <a href="index.php" onclick="return confirm('Vui lòng đăng nhập để có thể đặt phòng')"><button class='btn btn-primary bookbtn'>Đặt phòng</button></a>
+          <?php endif; ?>
         </div>
       </div>
-      <div class="d-flex justify-content-center">
-    <button class="btn btn-primary bookbtn" onclick="openbookbox()">Đặt phòng</button>
-    </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="thirdsection">
-    <h1 class="head"><< Trang thiết bị >></h1>
-    <div class="facility">
-      <div class="box">
-        <h2>Swiming pool</h2>
-      </div>
-      <div class="box">
-        <h2>Spa</h2>
-      </div>
-      <div class="box">
-        <h2>24*7 Restaurants</h2>
-      </div>
-      <div class="box">
-        <h2>24*7 Gym</h2>
-      </div>
-      <div class="box">
-        <h2>Heli service</h2>
-      </div>
-    </div>
-  </section>
+    <section id="thirdsection">
+      <h1 class="head">
+        << Dịch vụ>>
+      </h1>
+      <div class=" owl-carousel owl-theme p-3">
+        <?php
+        $sql = "SELECT * FROM service";
+        $result = $conn->query($sql) or die($conn->error);
 
-  <section id="contactus">
-    <div class="social">
-      <i class="fa-brands fa-instagram"></i>
-      <i class="fa-brands fa-facebook"></i>
-      <i class="fa-solid fa-envelope"></i>
-    </div>
-  </section>
-</body>
+        if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+        ?>
+          <div class="item" style="background-image: url(./image/service/<?php echo $row["image"]; ?>); height:320px;">   
+            <p class="bg-dark text-center text-light py-2"><?php echo $row['name']; ?></p>
+          </div>
+        <?php
+          }
+        }
+        ?>
+      </div>
+    </section>
+    <section id="fourthsection">
+      <h1 class="head">
+        << Đánh giá của khách hàng>>
+      </h1>
+      <div class="owl-carousel owl-theme p-3">
+        <?php
+        $sql = "SELECT *, user.name FROM feedback JOIN user ON user.id=feedback.user_id WHERE status=0";
+        $result = $conn->query($sql) or die($conn->error);
 
-<script src="./javascript/home.js"></script>
-</html>
+        if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+        ?>
+            <div class="item bg-light py-4 px-3">
+              <div class="fs-3">
+                <?php
+                $rating = $row['rate'];
+                for ($i = 0; $i < $rating; $i++) {
+                  echo '<span class="text-warning">★</span>';
+                }
+                ?>
+              </div>
+              <p class="text-muted fst-italic mb-0">
+                <?php $timestamp = strtotime($row['created_at']);
+                  echo date('d-m-Y H:i:s', $timestamp); ?></p>
+              <p class="text-muted fst-italic mb-0"><?php echo $row['name']; ?></p>
+              <h5>"<?php echo $row['content']; ?>"</h5>
+            </div>
+        <?php
+          }
+        }
+        ?>
+      </div>
+
+    </section>
+
+  </body>
+
+  <?php include 'footer.php' ?>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    $('.owl-carousel').owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: false,
+      autoplay: true,
+      autoplayTimeout: 3000,
+      center: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        600: {
+          items: 1
+        },
+        1000: {
+          items: 3
+        }
+      }
+    })
+  </script>

@@ -6,6 +6,7 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+<!-- TODO: giao diện login -->
 
 <head>
     <meta charset="UTF-8">
@@ -62,17 +63,17 @@ session_start();
                 </div>
 
                 <!-- // ==userlogin== -->
-                <?php 
+                <?php
                 if (isset($_POST['user_login_submit'])) {
                     $Phone = $_POST['phone'];
                     $Password = $_POST['password'];
 
-                    $sql = "SELECT * FROM user WHERE phone = '$Phone' AND password = BINARY'$Password'";
+                    $sql = "SELECT * FROM user WHERE phone = '$Phone' AND password = '$Password'";
                     $result = mysqli_query($conn, $sql);
 
                     if ($result->num_rows > 0) {
-                        $_SESSION['userID']=mysqli_fetch_array($result)['id'];
-                        $_SESSION['userPhone']=$Phone;
+                        $_SESSION['userID'] = mysqli_fetch_array($result)['id'];
+                        $_SESSION['userPhone'] = $Phone;
                         $Phone = "";
                         $Password = "";
                         header("Location: home.php");
@@ -91,35 +92,148 @@ session_start();
                         <label for="Username">Username</label>
                     </div> -->
                     <div class="form-floating">
-                        <input typuser_logine="phone" class="form-control" name="phone" placeholder=" ">
-                        <label for="Phone">Phone</label>
+                        <input typuser_logine="phone" class="form-control" name="phone" placeholder=" " required pattern="[0-9]+" title="Nhập số từ 0-9">
+                        <label for="Phone">Số điện thoại</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" name="password" placeholder=" ">
-                        <label for="Password">Password</label>
+                        <input type="password" class="form-control" name="password" placeholder=" " required>
+                        <label for="Password">Mật khẩu</label>
                     </div>
                     <button type="submit" name="user_login_submit" class="auth_btn">Đăng nhập</button>
 
                     <div class="footer_line">
+                        <h6 class="page_move_btn" onclick="editpasswordpage()">Quên mật khẩu?</h6>
                         <h6>Bạn chưa có tài khoản? <span class="page_move_btn" onclick="signuppage()">Đăng kí</span></h6>
                     </div>
                 </form>
-                
-                <!-- == Emp Login == -->
-                <?php              
-                    if (isset($_POST['Emp_login_submit'])) {
-                        $Phone = $_POST['emp_phone'];
-                        $Password = $_POST['emp_password'];
 
-                        $sql = "SELECT * FROM staff WHERE phone = '$Phone' AND password = BINARY'$Password'";
+                <!-- == Emp Login == -->
+                <?php
+                if (isset($_POST['Emp_login_submit'])) {
+                    $Phone = $_POST['emp_phone'];
+                    $Password = $_POST['emp_password'];
+
+                    $sql = "SELECT * FROM staff WHERE phone = '$Phone' AND password = '$Password'";
+                    $result = mysqli_query($conn, $sql);
+
+                    if ($result->num_rows > 0) {
+                        $_SESSION['staffID'] = mysqli_fetch_array($result)['id'];
+                        $_SESSION['staffPhone'] = $Phone;
+                        $Phone = "";
+                        $Password = "";
+                        header("Location: admin/admin.php");
+                    } else {
+                        echo "<script>swal({
+                                title: 'Có lỗi xảy ra, xin vui lòng thử lại!',
+                                icon: 'error',
+                            });
+                            </script>";
+                    }
+                }
+                ?>
+                <form class="employee_login authsection" id="employeelogin" action="" method="POST">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="emp_phone" placeholder=" " required pattern="[0-9]+" title="Nhập số từ 0-9">
+                        <label for="floatingInput">Số điện thoại</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" name="emp_password" placeholder=" " required>
+                        <label for="floatingPassword">Mật khẩu</label>
+                    </div>
+                    <button type="submit" name="Emp_login_submit" class="auth_btn">Đăng nhập</button>
+                </form>
+
+            </div>
+
+            <!--============ signup =============-->
+            <?php
+            if (isset($_POST['user_signup_submit'])) {
+                $Username = $_POST['username'];
+                // $Birthday = $_POST['birthday'];
+                // $Gender = $_POST['gender'];
+                // $Cccd = $_POST['cccd'];
+                $Address = $_POST['address'];
+                $Phone = $_POST['phone'];
+                $Email = $_POST['email'];
+                $Password = $_POST['password'];
+                $CPassword = $_POST['confirmPassword'];
+
+                if ($Username == "" || $Email == "" || $Password == "") {
+                    echo "<script>swal({
+                            title: 'Hãy nhập đầy đủ thông tin',
+                            icon: 'error',
+                        });
+                        </script>";
+                } else {
+                    if ($Password == $CPassword) {
+                        $sql = "SELECT * FROM user WHERE phone = '$Phone'";
                         $result = mysqli_query($conn, $sql);
 
                         if ($result->num_rows > 0) {
-                            $_SESSION['userID']=mysqli_fetch_array($result)['id'];
-                            $_SESSION['userPhone']=$Phone;
-                            $Phone = "";
-                            $Password = "";
-                            header("Location: admin/admin.php");
+                            echo "<script>swal({
+                                    title: 'Số điện thoại đã tồn tại',
+                                    icon: 'error',
+                                });
+                                </script>";
+                        } else {
+                            $sql = "INSERT INTO user (name, address, phone, email, password) VALUES ('$Username', '$Address', '$Phone', '$Email', '$Password')";
+                            $result = mysqli_query($conn, $sql);
+                            $sql = "SELECT * FROM user WHERE phone = '$Phone'";
+                            $result = mysqli_query($conn, $sql);
+                            if ($result) {
+                                $_SESSION['userID'] = mysqli_fetch_array($result)['id'];
+                                $_SESSION['userPhone'] = mysqli_fetch_array($result)['phone'];
+                                $Username = "";
+                                $Phone = "";
+                                $Password = "";
+                                $CPassword = "";
+                                header("Location: home.php");
+                            } else {
+                                echo "<script>swal({
+                                        title: 'Có lỗi xảy ra, xin vui lòng thử lại!',
+                                        icon: 'error',
+                                    });
+                                    </script>";
+                            }
+                        }
+                    } else {
+                        echo "<script>swal({
+                                title: 'Mật khẩu không trùng khớp',
+                                icon: 'error',
+                            });
+                            </script>";
+                    }
+                }
+            }
+            ?>
+            <!--============ changepassword =============-->
+            <?php
+            if (isset($_POST['user_change_password'])) {
+                $Phone = $_POST['phone'];
+                $Email = $_POST['email'];
+                $NewPassword = $_POST['password'];
+                $ConfirmPassword = $_POST['confirmPassword'];
+
+                if ($NewPassword != $ConfirmPassword) {
+                    echo "<script>swal({
+                title: 'Mật khẩu mới và xác nhận mật khẩu không khớp',
+                icon: 'error',
+            });
+            </script>";
+                } else {
+                    $sql = "SELECT * FROM user WHERE phone = '$Phone' AND email = '$Email'";
+                    $result = mysqli_query($conn, $sql);
+
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        $updateSql = "UPDATE user SET password = '$NewPassword' WHERE phone = '$Phone' AND email = '$Email'";
+                        $updateResult = mysqli_query($conn, $updateSql);
+
+                        if ($updateResult) {
+                            echo "<script>swal({
+                                title: 'Đổi mật khẩu thành công',
+                                icon: 'success',
+                            });
+                            </script>";
                         } else {
                             echo "<script>swal({
                                 title: 'Có lỗi xảy ra, xin vui lòng thử lại!',
@@ -127,112 +241,91 @@ session_start();
                             });
                             </script>";
                         }
-                    }
-                ?> 
-                <form class="employee_login authsection" id="employeelogin" action="" method="POST">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="emp_phone" placeholder=" ">
-                        <label for="floatingInput">Phone</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="password" class="form-control" name="emp_password" placeholder=" ">
-                        <label for="floatingPassword">Password</label>
-                    </div>
-                    <button type="submit" name="Emp_login_submit" class="auth_btn">Đăng nhập</button>
-                </form>
-                
-            </div>
-
-            <!--============ signup =============-->
-            <?php       
-                if (isset($_POST['user_signup_submit'])) {
-                    $Username = $_POST['username'];
-                    $Address = $_POST['address'];
-                    $Phone = $_POST['phone'];
-                    $Email = $_POST['email'];
-                    $Password = $_POST['password'];
-                    $CPassword = $_POST['confirmPassword'];
-
-                    if($Username == "" || $Email == "" || $Password == ""){
+                    } else {
                         echo "<script>swal({
-                            title: 'Fill the proper details',
+                            title: 'Không tìm thấy người dùng',
                             icon: 'error',
                         });
                         </script>";
                     }
-                    else{
-                        if ($Password == $CPassword) {
-                            $sql = "SELECT * FROM user WHERE email = '$Email'";
-                            $result = mysqli_query($conn, $sql);
-    
-                            if ($result->num_rows > 0) {
-                                echo "<script>swal({
-                                    title: 'Email đã tồn tại',
-                                    icon: 'error',
-                                });
-                                </script>";
-                            } else {
-                                $sql = "INSERT INTO user (name, address, phone, email, password) VALUES ('$Username', '$Address', '$Phone', '$Email', '$Password')";
-                                $result = mysqli_query($conn, $sql);
-                                $sql = "SELECT * FROM user WHERE email = '$Email'";
-                            $result = mysqli_query($conn, $sql);
-                                if ($result) {
-                                    $_SESSION['userID']=mysqli_fetch_array($result)['id'];
-                            $_SESSION['userPhone']=mysqli_fetch_array($result)['phone'];
-                                    $Username = "";
-                                    $Email = "";
-                                    $Password = "";
-                                    $CPassword = "";
-                                    header("Location: home.php");
-                                } else {
-                                    echo "<script>swal({
-                                        title: 'Có lỗi xảy ra, xin vui lòng thử lại!',
-                                        icon: 'error',
-                                    });
-                                    </script>";
-                                }
-                            }
-                        } else {
-                            echo "<script>swal({
-                                title: 'Mật khẩu không trùng khớp',
-                                icon: 'error',
-                            });
-                            </script>";
-                        }
-                    }
-                    
                 }
+            }
             ?>
             <div id="sign_up">
                 <h2>Đăng ký</h2>
 
                 <form class="user_signup" id="usersignup" action="" method="POST">
                     <div class="form-floating">
-                        <input type="text" class="form-control" name="username" placeholder=" ">
-                        <label for="Username">Username</label>
+                        <input type="text" class="form-control" name="username" placeholder=" " required>
+                        <label for="Username">Họ & tên</label>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="form-floating col-9">
+                            <input type="date" class="form-control" name="birthday" placeholder=" " required>
+                            <label for="Birthday" style="left:12px;">Ngày sinh</label>
+                        </div>
+                        <div class="form-floating col-3">
+                            <div>
+                                <label>Giới tính</label>
+                            </div>
+                            <input type="radio" name="gender" value="1" checked>Nam
+                            <input type="radio" name="gender" value="0">Nữ
+                        </div>
                     </div>
                     <div class="form-floating">
-                        <input type="text" class="form-control" name="address" placeholder=" ">
+                        <input type="text" class="form-control" name="cccd" placeholder=" " required>
+                        <label for="IdentityCard">Số CMND/CCCD</label>
+                    </div> -->
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="address" placeholder=" " required>
                         <label for="Address">Địa chỉ</label>
                     </div>
                     <div class="form-floating">
-                        <input type="text" class="form-control" name="phone" placeholder=" ">
+                        <input type="text" class="form-control" name="phone" placeholder=" " required pattern="[0-9]+" title="Nhập số từ 0-9">
                         <label for="Phone">Số điện thoại</label>
                     </div>
                     <div class="form-floating">
-                        <input type="email" class="form-control" name="email" placeholder=" ">
+                        <input type="email" class="form-control" name="email" placeholder=" " required>
                         <label for="Email">Email</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" name="password" placeholder=" ">
-                        <label for="Password">Password</label>
+                        <input type="password" class="form-control" name="password" placeholder=" " required>
+                        <label for="Password">Mật khẩu</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" name="confirmPassword" placeholder=" ">
-                        <label for="CPassword">Confirm Password</label>
+                        <input type="password" class="form-control" name="confirmPassword" placeholder=" " required>
+                        <label for="CPassword">Xác nhận mật khẩu</label>
                     </div>
 
                     <button type="submit" name="user_signup_submit" class="auth_btn">Đăng ký</button>
+
+                    <div class="footer_line">
+                        <h6>Bạn đã có tài khoản? <span class="page_move_btn" onclick="loginpage()">Đăng nhập</span></h6>
+                    </div>
+                </form>
+            </div>
+            <div id="change_password">
+                <h2>Đổi mật khẩu</h2>
+
+                <form class="user_change_password" id="usersignup" action="" method="POST">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="phone" placeholder=" " required pattern="[0-9]+" title="Nhập số từ 0-9">
+                        <label for="Phone">Số điện thoại</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="email" class="form-control" name="email" placeholder=" " required>
+                        <label for="Email">Email</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" name="password" placeholder=" " required>
+                        <label for="Password">Mật khẩu mới</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" name="confirmPassword" placeholder=" " required>
+                        <label for="CPassword">Xác nhận mật khẩu mới</label>
+                    </div>
+
+                    <button type="submit" name="user_change_password" class="auth_btn">Đổi mật khẩu</button>
 
                     <div class="footer_line">
                         <h6>Bạn đã có tài khoản? <span class="page_move_btn" onclick="loginpage()">Đăng nhập</span></h6>
@@ -252,5 +345,5 @@ session_start();
 <!-- <script>
     AOS.init();
 </script> -->
-</html>
 
+</html>

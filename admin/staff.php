@@ -3,75 +3,12 @@ session_start();
 include '../config.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueBird - Admin</title>
-    <!-- fontowesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- boot -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/room.css">
-    <style>
-        .roombox {
-            background-color: #d1d7ff;
-            padding: 10px;
+        $id = $_GET['delete'];
+        $roomdeletesql = "DELETE FROM staff WHERE id = $id";
+        $result = mysqli_query($conn, $roomdeletesql);
+        header("Location:staff.php");
         }
-    </style>
-</head>
-
-<body>
-    <div class="addroomsection">
-        <form action="" method="POST">
-            <div class="h-100 py-2">
-            <div class="row h-100">
-                <div class="col-4">
-                    <label for="staffname">Tên :</label>
-                    <input type="text" name="staffname" class="form-control">
-                </div>
-                <div class="col-4">
-                    <label for="staffrole">Vị trí :</label>
-                    <select name="staffrole" class="form-control">
-                        <option value selected></option>
-                        <option value="Admin">Admin</option>
-                        <option value="Ban điều hành">Ban điều hành</option>
-                        <option value="Đầu bếp">Đầu bếp</option>
-                        <option value="Lễ tân">Lễ tân</option>
-                        <option value="Tạp vụ">Tạp vụ</option>
-                        <option value="Bảo vệ">Bảo vệ</option>
-                    </select>
-                </div>
-                <div class="col-4">
-                    <label for="address">Địa chỉ :</label>
-                    <input type="text" name="address" class="form-control">
-                </div>
-            </div>
-            <div class="row h-100">
-                <div class="col-3">
-                    <label for="phone">SĐT :</label>
-                    <input type="text" name="phone" class="form-control" style="width:200px">
-                </div>
-                <div class="col-3">
-                    <label for="email">Email :</label>
-                    <input type="email" name="email" class="form-control" style="width:200px">
-                </div>
-                <div class="col-3">
-                    <label for="password">Password :</label>
-                    <input type="password" name="password" class="form-control" style="width:200px">
-                </div>
-                <div class="col-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-success" name="addstaff">Thêm nhân viên</button>
-                </div>
-            </div>
-            </div>
-        </form>
-
-        <?php
+        //Thêm
         if (isset($_POST['addstaff'])) {
             $staffname = $_POST['staffname'];
             $staffrole = $_POST['staffrole'];
@@ -79,17 +16,92 @@ include '../config.php';
             $phone = $_POST['phone'];
             $email = $_POST['email'];
             $password = $_POST['password'];
-            // TODO: Tránh trùng staff
+            
+            $check_query = "SELECT * FROM staff WHERE phone = '$phone'";
+            $check_result = mysqli_query($conn, $check_query);
+            
+            if (mysqli_num_rows($check_result) > 0) {
+                echo "<script>alert('SĐT nhân viên đã tồn tại');</script>";
+            } else {
             $sql = "INSERT INTO staff(name,role,address,phone,email,password) VALUES ('$staffname', '$staffrole','$address','$phone','$email','$password')";
             $result = mysqli_query($conn, $sql);
 
             if ($result) {
                 header("Location: staff.php");
+            } else {
+                echo "<script>alert('Lỗi khi thêm nhân viên');</script>";
             }
         }
+        }
         ?>
-    </div>
 
+<?php include 'header.php'; ?>
+
+<div class="searchsection">
+        <input type="text" name="search_bar" id="search_bar" placeholder="search..." onkeyup="searchFun()">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+            Thêm nhân viên
+        </button>
+    </div>
+    <!-- Modal -->
+<div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="max-width:750px;">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Thêm nhân viên</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <form action="" method="POST">
+        <div class="modal-body">
+            <div class="row h-100">
+                <div class="col-lg-6">
+                    <label for="username">Tên:</label>
+                    <input type="text" name="staffname" class="form-control" required>
+                </div>
+                <div class="col-lg-6">
+                    <label for="staffrole">Vị trí:</label>
+                    <select name="staffrole" class="form-control" required>
+                        <option value="" disabled>Chọn vị trí</option>
+                        <?php
+                        $roles = array("Admin", "Ban điều hành", "Đầu bếp", "Lễ tân", "Tạp vụ", "Bảo vệ");
+
+                        foreach ($roles as $roleOption) {
+                            echo "<option value='$roleOption'>$roleOption</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                
+            </div>
+            <div class="row h-100">
+                <div class="col-lg-6">
+                    <label for="phone">Email:</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+                <div class="col-lg-6">
+                    <label for="phone">Địa chỉ:</label><br>
+                    <input type="text" name="address" class="form-control">
+                </div>
+                
+            </div>
+            <div class="row h-100">
+                <div class="col-lg-6">
+                    <label for="phone">SĐT :</label>
+                    <input type="text" name="phone" class="form-control" required pattern="[0-9]+" title="Nhập số từ 0-9">
+                </div>
+                <div class="col-lg-6">
+                    <label for="password">Mật khẩu :</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div> 
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" name="addstaff">Thêm nhân viên</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
 
     <div class="room">
         <?php
@@ -111,6 +123,4 @@ include '../config.php';
         ?>
     </div>
 
-</body>
-
-</html>
+    <?php include 'footer.php'; ?>

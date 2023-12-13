@@ -2,33 +2,78 @@
     session_start();
     include '../config.php';
 
+    //Thêm
+    if (isset($_GET['add'])) {
+        $id = $_GET['add'];
+        $sql_room_total = "SELECT COALESCE(SUM(room_type.price), 0) AS total_price, reservation.no_day 
+            FROM chosen_room 
+            INNER JOIN room ON chosen_room.room_id = room.id 
+            INNER JOIN room_type ON room.type_id = room_type.id 
+            INNER JOIN reservation ON chosen_room.reservation_id = reservation.id 
+            WHERE reservation.id = '$id'";
+            $result_room_total = mysqli_query($conn, $sql_room_total);
+            $row_room_total = mysqli_fetch_assoc($result_room_total);
+            $room_total = $row_room_total['total_price'] * $row_room_total['no_day'];
 
+        $sql_service_total = "SELECT COALESCE(SUM(service.price), 0) AS total_price, reservation.no_guess  
+            FROM chosen_service 
+            INNER JOIN service ON chosen_service.service_id = service.id 
+            INNER JOIN reservation ON chosen_service.reservation_id = reservation.id 
+            WHERE reservation.id = '$id'";
+            $result_service_total = mysqli_query($conn, $sql_service_total);
+            var_dump($result_service_total);
+            $row_service_total = mysqli_fetch_assoc($result_service_total);
+            $service_total = $row_service_total['total_price'] * $row_service_total['no_guess'];
+
+    $method = $_GET['method'];
+    $final_total = $room_total + $service_total;
+    $sql = "UPDATE reservation SET status = 1 WHERE id = '$id'";
+    $result = mysqli_query($conn, $sql);
+    $update_status_sql = "UPDATE room
+    JOIN chosen_room ON room.id = chosen_room.room_id
+    JOIN reservation ON chosen_room.reservation_id = reservation.id
+    SET room.status = 
+    CASE 
+        WHEN reservation.status = 0 THEN 2
+        WHEN reservation.status IN (1, 2) THEN 1
+        ELSE room.status
+    END
+    WHERE room.id = '$room_id' AND reservation.id = '$id';";
+    $update_status_result = mysqli_query($conn, $update_status_sql);
+    if ($result) {
+        $result_delete_payment = "DELETE FROM payment WHERE reservation_id = $id";
+    $result_delete_payment = mysqli_query($conn, $result_delete_payment);
+    }
+    $sql_insert_payment = "INSERT INTO payment (reservation_id, room_total, service_total, final_total, method) 
+    VALUES ('$id', '$room_total', '$service_total', '$final_total', '$method')";
+    $result_insert_payment = mysqli_query($conn, $sql_insert_payment);
+
+    if ($result_insert_payment) {
+        echo "<script>alert('Tạo hóa đơn thành công');</script>";
+        header("Location:reservation.php");
+    } else {
+        echo "<script>alert('Lỗi khi tạo hóa đơn');</script>";
+    }   
+    }
+    //Xóa
+    if (isset($_GET['delete'])) {
+        $id = $_GET['delete'];
+        $deletesql = "DELETE FROM payment WHERE id = $id";
+        $result = mysqli_query($conn, $deletesql) or die($conn->error);
+        header("Location:payment.php");
+    }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sparrow Hotel - Admin</title>
-    <!-- boot -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <!-- fontowesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-	<!-- css for table and search bar -->
-	<link rel="stylesheet" href="css/roombook.css">
-
-</head>
-<body>
+<?php include 'header.php'; ?>
 	<div class="searchsection">
         <input type="text" name="search_bar" id="search_bar" placeholder="search..." onkeyup="searchFun()">
     </div>
 
-    <div class="roombooktable" class="table-responsive-xl">
+    <div class="room">
         <?php
-            $paymanttablesql = "SELECT * FROM payment";
+            $paymanttablesql = "SELECT *, user.name FROM payment 
+                                JOIN reservation ON reservation.id=payment.reservation_id 
+                                JOIN user ON reservation.user_id = user.id";
             $paymantresult = mysqli_query($conn, $paymanttablesql);
 
             $nums = mysqli_num_rows($paymantresult);
@@ -36,19 +81,15 @@
         <table class="table table-bordered" id="table-data">
             <thead>
                 <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Tên</th>
-                    <th scope="col">Loại phòng</th>
-                    <th scope="col">Số giường</th>
+                    <th scope="col">Id đặt phòng</th>
+                    <!-- <th scope="col">Tên khách hàng</th>
                     <th scope="col">Ngày đến</th>
-                    <th scope="col">Ngày đi</th>
-					<th scope="col">Số ngày</th>
-                    <th scope="col">Số phòng</th>
-					<th scope="col">Đặt bữa</th>
+                    <th scope="col">Ngày đi</th> -->
+                    <th scope="col">Tên khách hàng</th>
                     <th scope="col">Tiền phòng</th>
-                    <th scope="col">Tiền giường</th>
-                    <th scope="col">Tiền ăn</th>
+                    <th scope="col">Tiền dịch vụ</th>
 					<th scope="col">Tổng</th>
+					<th scope="col">Phương thức thanh toán</th>
                     <th scope="col">Hành động</th>
                     <!-- <th>Delete</th> -->
                 </tr>
@@ -58,23 +99,18 @@
             <?php
             while ($res = mysqli_fetch_array($paymantresult)) {
             ?>
+            <!-- TODO: Hiện mã, user, total -->
                 <tr>
-                    <td><?php echo $res['id'] ?></td>
-                    <td><?php echo $res['Name'] ?></td>
-                    <td><?php echo $res['RoomType'] ?></td>
-                    <td><?php echo $res['Bed'] ?></td>
-					<td><?php echo $res['cin'] ?></td>
-                    <td><?php echo $res['cout'] ?></td>
-					<td><?php echo $res['noofdays'] ?></td>
-                    <td><?php echo $res['NoofRoom'] ?></td>
-                    <td><?php echo $res['meal'] ?></td>
-                    <td><?php echo $res['roomtotal'] ?></td>
-					<td><?php echo $res['bedtotal'] ?></td>
-					<td><?php echo $res['mealtotal'] ?></td>
-					<td><?php echo $res['finaltotal'] ?></td>
+                    <td><?php echo $res['reservation_id'] ?></td>
+                    <td><?php echo $res['name'] ?></td>
+                    <td><?php echo $res['room_total'] ?></td>
+					<td><?php echo $res['service_total'] ?></td>
+					<td><?php echo $res['final_total'] ?></td>
+                    <td><?php echo $res['method'] ?></td>
+
                     <td class="action">
-                        <!-- <a href="invoiceprint.php?id= <?php echo $res['id']?>"><button class="btn btn-primary"><i class="fa-solid fa-print"></i>Print</button></a> -->
-						<a href="paymantdelete.php?id=<?php echo $res['id']?>"><button class="btn btn-danger">Xóa</button></a>
+                        <a href="invoiceprint.php?id=<?php echo $res['reservation_id']?>"><button class="btn btn-primary ">In</button></a>
+						<a href="payment.php?delete=<?php echo $res['id']?>"  onclick="return confirm('Bạn có chắc không?')"><button class="btn btn-danger">Xóa</button></a>
                     </td>
                 </tr>
             <?php
@@ -83,33 +119,4 @@
             </tbody>
         </table>
     </div>
-</body>
-
-<script>
-    //search bar logic using js
-    const searchFun = () =>{
-        let filter = document.getElementById('search_bar').value.toUpperCase();
-
-        let myTable = document.getElementById("table-data");
-
-        let tr = myTable.getElementsByTagName('tr');
-
-        for(var i = 0; i< tr.length;i++){
-            let td = tr[i].getElementsByTagName('td')[1];
-
-            if(td){
-                let textvalue = td.textContent || td.innerHTML;
-
-                if(textvalue.toUpperCase().indexOf(filter) > -1){
-                    tr[i].style.display = "";
-                }else{
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-
-    }
-
-</script>
-
-</html>
+<?php include('footer.php') ?>
