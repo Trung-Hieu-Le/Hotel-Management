@@ -17,7 +17,37 @@
         </div>
 
         <div class="welcomeline">
+          <div>
           <h2 class="welcometag">Chào mừng đến với Sparrow Hotel</h2>
+          </div>
+          <div class="welcometag2">
+          <form action="reservation_modal_1.php" method="GET">
+          <div class="row">
+            <div class="col-3">
+              <label for="cin" class="form-label">Ngày nhận phòng</label>
+              <input name="cin" type="date" class="form-control" value="" required="">
+            </div>
+            <div class="col-3">
+              <label for="cout" class="form-label">Ngày trả phòng</label>
+              <input name="cout" type="date" class="form-control" value="" required="">
+            </div>
+            <div class="col-3">
+              <label for="no_guess" class="form-label">Số hành khách:</label>
+              <select name="no_guess" id="no_guess" class="form-select" required>
+                    <option value="" disabled selected>Chọn số hành khách</option>
+                    <?php for ($i = 1; $i <= 20; $i++) : ?>
+                        <option value="<?php echo $i ?>"><?= $i ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div class="col-3 position-relative">
+              <div class="position-absolute bottom-0">
+                <button type="submit" class="btn btn-primary" name="modal1">Tìm kiếm phòng</button>
+              </div>
+            </div>
+          </div>
+          </form>
+          </div>
         </div>
 
       </div>
@@ -32,7 +62,7 @@
           << Phòng>>
         </h1>
         <!-- TODO: Chi tiết -->
-        <div class="roomselect">
+        <!-- <div class="roomselect">
           <div class="roombox">
             <div class="hotelphoto h1" style="background-image: url(./image/hotel1photo.webp);"></div>
             <div class="roomdata">
@@ -83,14 +113,35 @@
               <button class="btn btn-primary bookbtn">Chi tiết</button>
             </div>
           </div>
+        </div> -->
+        <div class=" owl-carousel owl-theme p-3">
+          <?php
+          $sql = "SELECT * FROM room_type WHERE status = 1";
+          $result = $conn->query($sql) or die($conn->error);
+
+          if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+          ?>
+              <div class="card">
+                <img class="card-img" src="./image/room_type/<?php echo $row["image"]; ?>" alt="<?php echo $row['name']; ?>">
+                <div class="card-body">
+                  <h3 class="card-title"><?php echo $row['name']; ?></h3>
+                  <a href="roomtype.php?id=<?php echo $row['id'] ?>" class="btn btn-primary card-btn">Chi tiết</a>
+                </div>
+              </div>
+
+          <?php
+            }
+          }
+          ?>
         </div>
         <div class="d-flex justify-content-center">
           <?php if ($userID == true) : ?>
             <a href="reservation_modal_1.php">
-              <button class="btn btn-primary bookbtn">Đặt phòng</button>
+              <button class="btn btn-success">Đặt phòng</button>
             </a>
           <?php else : ?>
-            <a href="index.php" onclick="return confirm('Vui lòng đăng nhập để có thể đặt phòng')"><button class='btn btn-primary bookbtn'>Đặt phòng</button></a>
+            <a href="index.php" onclick="return confirm('Vui lòng đăng nhập để có thể đặt phòng')"><button class='btn btn-success bookbtn'>Đặt phòng</button></a>
           <?php endif; ?>
         </div>
       </div>
@@ -108,9 +159,9 @@
         if ($result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
         ?>
-          <div class="item" style="background-image: url(./image/service/<?php echo $row["image"]; ?>); height:320px;">   
-            <p class="bg-dark text-center text-light py-2"><?php echo $row['name']; ?></p>
-          </div>
+            <div class="item bg-light" style="background-image: url(./image/service/<?php echo $row["image"]; ?>); height:320px;">
+              <p class="bg-dark text-center text-light py-2"><?php echo $row['name']; ?></p>
+            </div>
         <?php
           }
         }
@@ -140,7 +191,7 @@
               </div>
               <p class="text-muted fst-italic mb-0">
                 <?php $timestamp = strtotime($row['created_at']);
-                  echo date('H:i:s d/m/Y', $timestamp); ?></p>
+                echo date('H:i:s d/m/Y', $timestamp); ?></p>
               <p class="text-muted fst-italic mb-0"><?php echo $row['name']; ?></p>
               <h5>"<?php echo $row['content']; ?>"</h5>
             </div>
@@ -152,15 +203,16 @@
 
     </section>
     <section id="contactus">
-    <div class="social">
-      <i class="fa-brands fa-instagram"></i>
-      <i class="fa-brands fa-facebook"></i>
-      <i class="fa-solid fa-envelope"></i>
-    </div>
+      <div class="social">
+        <i class="fa-brands fa-instagram"></i>
+        <i class="fa-brands fa-facebook"></i>
+        <i class="fa-solid fa-envelope"></i>
+      </div>
     </section>
   </body>
-<script src="./javascript/home.js"></script>
-</html>
+  <script src="./javascript/home.js"></script>
+
+  </html>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -172,16 +224,16 @@
       nav: false,
       autoplay: true,
       autoplayTimeout: 3000,
-      center: false,
+      center: false, //Set true?
       responsive: {
         0: {
           items: 1
         },
         600: {
-          items: 1
+          items: 2
         },
         1000: {
-          items: 3
+          items: 4
         }
       }
     })
