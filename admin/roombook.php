@@ -3,6 +3,70 @@ session_start();
 include '../config.php';
 
 ?>
+<?php
+//Xóa
+if (isset($_GET['delete'])) {
+    $id = $_GET['delete'];
+
+    $deletesql = "DELETE FROM reservation WHERE id = $id";
+
+    $result = mysqli_query($conn, $deletesql);
+
+    header("Location:roombook.php");
+}
+//Thêm
+if (isset($_POST['guestdetailsubmit'])) {
+    $userID = $_POST['User'];
+    $Phone = $_POST['Phone'];
+    $RoomType = $_POST['RoomType'];
+    $NoofRoom = $_POST['NoofRoom'];
+    $Bed = $_POST['Bed'];
+    $Cin = $_POST['cin'];
+    $Cout = $_POST['cout'];
+    $Note = $_POST['note'];
+    if (empty($userID) || empty($NoofRoom) || empty($RoomType) || strtotime($Cout) <= strtotime($Cin)) {
+        echo "<script>swal({
+                    title: 'Hãy nhập đầy đủ thông tin và ngày đi không được trước ngày đến',
+                    icon: 'error',
+                });
+                </script>";
+    } else {
+        $Status = 0;
+        $sql = "INSERT INTO reservation(user_id,phone,room_type,no_room,no_bed,check_in,check_out,no_day,status,note)
+                 VALUES ('$userID','$Phone','$RoomType','$NoofRoom','$Bed','$Cin','$Cout',datediff('$Cout','$Cin'),$Status,'$Note')";
+        
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            $reservationId = mysqli_insert_id($conn);
+
+            if (isset($_POST['Service']) && is_array($_POST['Service'])) {
+                foreach ($_POST['Service'] as $service_id) {
+                    $sql = "INSERT INTO chosen_service (reservation_id, service_id) VALUES ('$reservationId', '$service_id')";
+                    $result2 = mysqli_query($conn, $sql);
+                    if (!$result2) {
+                        // Handle the error, for example, log it or display a message
+                        echo "<script>console.error('Error inserting into chosen_service: " . mysqli_error($conn) . "');</script>";
+                    }
+                }
+            }
+
+            echo "<script>swal({
+                            title: 'Đặt phòng thành công',
+                            icon: 'success',
+                        });
+                    </script>";
+        } else {
+            // Handle the error, for example, log it or display a message
+            echo "<script>swal({
+                                title: 'Xin vui lòng thử lại',
+                                icon: 'error',
+                            });
+                    </script>";
+        }
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,251 +84,139 @@ include '../config.php';
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link rel="stylesheet" href="./css/roombook.css">
     <title>Sparrow Hotel - Admin</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script>
+    $('select').selectpicker();
+
+</script>
 </head>
 
 <body>
     <!-- guestdetailpanel -->
 
-    <div id="guestdetailpanel">
-        <form action="" method="POST" class="guestdetailpanelform" style="height: 665px;">
-            <div class="head">
-                <h3>ĐẶT PHÒNG</h3>
-                <i class="fa-solid fa-circle-xmark" onclick="adduserclose()"></i>
-            </div>
-            <div class="middle" style="height: 550px;">
-                <div class="reservationinfo">
-                    <!-- <h4>Thông tin đặt phòng</h4> -->
-                    <select name="User" class="selectinput" onchange="updatePhone()">
-                        <option value selected>Người đặt phòng</option>
-                        <?php
-                        $usersql = "SELECT id, name, phone FROM user";
-                        $userresult = mysqli_query($conn, $usersql);
-                        if (mysqli_num_rows($userresult) > 0) {
-                            while ($row = mysqli_fetch_assoc($userresult)) {
-                                echo "<option value='" . $row["id"] . "' data-phone='" . $row["phone"] . "'>" . $row["name"] . "</option>";
+    <!-- Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">ĐẶT PHÒNG</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="" method="POST">
+                    <div class="modal-body">
+                        <label for="phone-input" class="form-label">Tài khoản khách hàng:</label>
+                        <select name="User" class="form-select mb-3">
+                            <option value="" disabled>Chọn người đặt phòng</option>
+                            <?php
+                            $usersql = "SELECT id, name FROM user";
+                            $userresult = mysqli_query($conn, $usersql);
+                            if (mysqli_num_rows($userresult) > 0) {
+                                while ($row = mysqli_fetch_assoc($userresult)) {
+                                    echo "<option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
+                                }
                             }
-                        }
-                        ?>
-                    </select>
-                    <div class="w-100 d-flex">
-                        <div class="d-flex">
-                            <div class="align-self-center">
-                                SĐT liên hệ:
+                            ?> </select>
+                        <div class="mb-3">
+                            <label for="phone-input" class="form-label">SĐT liên hệ:</label>
+                            <input type="text" class="form-control" id="phone-input" name="Phone">
+                        </div>
+                        <!-- Dropdown Loại phòng -->
+<div class="mb-3">
+  <label for="roomTypeSelect" class="form-label">Loại phòng:</label>
+  <select name="RoomType" id="roomTypeSelect" class="form-select">
+    <option value="" disabled>Chọn loại phòng</option>
+    <?php
+    $roomtypesql = "SELECT id, name FROM room_type";
+    $roomtyperesult = mysqli_query($conn, $roomtypesql);
+    if (mysqli_num_rows($roomtyperesult) > 0) {
+      while ($row = mysqli_fetch_assoc($roomtyperesult)) {
+        echo "<option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
+      }
+    }
+    ?>
+  </select>
+</div>
+<!-- Dropdown Số phòng -->
+<div class="mb-3">
+  <label for="noOfRoomSelect" class="form-label">Số phòng:</label>
+  <select name="NoofRoom" id="noOfRoomSelect" class="form-select">
+    <option value="" disabled>Chọn số phòng</option>
+    <?php
+    for ($i = 1; $i <= 10; $i++) {
+      echo "<option value='$i'>$i</option>";
+    }
+    ?>
+  </select>
+</div>
+
+<!-- Dropdown Số giường -->
+<div class="mb-3">
+  <label for="bedSelect" class="form-label">Số giường:</label>
+  <select name="Bed" id="bedSelect" class="form-select">
+    <option value="" disabled>Chọn số giường</option>
+    <?php
+    for ($i = 1; $i <= 20; $i++) {
+      echo "<option value='$i'>$i</option>";
+    }
+    ?>
+  </select>
+</div>
+
+<!-- Dropdown Dịch vụ -->
+<div class="mb-3">
+  <label for="serviceSelect" class="form-label">Dịch vụ:</label>
+  <select name="Service[]" class="form-select selectpicker" multiple data-live-search="true">
+    <option value="" disabled>Dịch vụ</option>
+    <?php
+    $servicesql = "SELECT id, name FROM service";
+    $serviceresult = mysqli_query($conn, $servicesql);
+    if (mysqli_num_rows($serviceresult) > 0) {
+        while ($row = mysqli_fetch_assoc($serviceresult)) {
+            echo "<option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
+        }
+    }
+    ?>
+</select>
+</div>
+                        <!-- Thêm các trường thông tin khác tương tự -->
+
+                        <!-- Các trường ngày đến và ngày đi -->
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="cin" class="form-label">Ngày đến</label>
+                                <input name="cin" type="date" class="form-control">
+                            </div>
+                            <div class="col">
+                                <label for="cout" class="form-label">Ngày đi</label>
+                                <input name="cout" type="date" class="form-control">
                             </div>
                         </div>
-                        <input style="width:80%" type="text" name="Phone" id="phone-input">
+
+                        <div class="mb-3">
+                            <label for="note" class="form-label">Ghi chú</label>
+                            <input type="text" class="form-control" id="note" name="note" placeholder="Ghi chú">
+                        </div>
                     </div>
-
-                    <select name="RoomType" class="selectinput">
-                        <option value selected>Loại phòng</option>
-                        <option value="Superior Room">SUPERIOR ROOM</option>
-                        <option value="Deluxe Room">DELUXE ROOM</option>
-                        <option value="Guest House">GUEST HOUSE</option>
-                        <option value="Single Room">SINGLE ROOM</option>
-                    </select>
-                    <select name="Bed" class="selectinput">
-                        <option value selected>Số giường</option>
-                        <option value="Đơn">Đơn</option>
-                        <option value="Đôi">Đôi</option>
-                        <option value="Ba">Ba</option>
-                        <option value="Bốn">Bốn</option>
-                        <!-- <option value="None">None</option> -->
-                    </select>
-                    <select name="NoofRoom" class="selectinput">
-                        <option value selected>Số phòng</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                    <select name="Meal" class="selectinput">
-                        <option value selected>Đặt bữa</option>
-                        <option value="Room only">Room only</option>
-                        <option value="Breakfast">Breakfast</option>
-                        <option value="Half Board">Half Board</option>
-                        <option value="Full Board">Full Board</option>
-                    </select>
-                    <div class="datesection">
-                        <span>
-                            <label for="cin">Ngày đến</label>
-                            <input name="cin" type="date">
-                        </span>
-                        <span>
-                            <label for="cin">Ngày đi</label>
-                            <input name="cout" type="date">
-                        </span>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-success" name="guestdetailsubmit">Hoàn thành</button>
                     </div>
-                    <input type="text" name="note" placeholder="Ghi chú">
-                </div>
+                </form>
             </div>
-            <div class="footer">
-                <button class="btn btn-success" name="guestdetailsubmit">Hoàn thành</button>
-            </div>
-        </form>
-
-        <?php
-        // <!-- room availablity start-->
-
-        $rsql = "select * from room";
-        $rre = mysqli_query($conn, $rsql);
-        $r = 0;
-        $sc = 0;
-        $gh = 0;
-        $sr = 0;
-        $dr = 0;
-
-        while ($rrow = mysqli_fetch_array($rre)) {
-            $r = $r + 1;
-            $s = $rrow['type'];
-            if ($s == "Superior Room") {
-                $sc = $sc + 1;
-            }
-            if ($s == "Guest House") {
-                $gh = $gh + 1;
-            }
-            if ($s == "Single Room") {
-                $sr = $sr + 1;
-            }
-            if ($s == "Deluxe Room") {
-                $dr = $dr + 1;
-            }
-        }
-
-        $csql = "select * from payment";
-        $cre = mysqli_query($conn, $csql);
-        $cr = 0;
-        $csc = 0;
-        $cgh = 0;
-        $csr = 0;
-        $cdr = 0;
-        while ($crow = mysqli_fetch_array($cre)) {
-            $cr = $cr + 1;
-            $cs = $crow['RoomType'];
-
-            if ($cs == "Superior Room") {
-                $csc = $csc + 1;
-            }
-
-            if ($cs == "Guest House") {
-                $cgh = $cgh + 1;
-            }
-            if ($cs == "Single Room") {
-                $csr = $csr + 1;
-            }
-            if ($cs == "Deluxe Room") {
-                $cdr = $cdr + 1;
-            }
-        }
-        // room availablity
-        // Superior Room =>
-        $f1 = $sc - $csc;
-        if ($f1 <= 0) {
-            $f1 = "NO";
-        }
-        // Guest House =>
-        $f2 =  $gh - $cgh;
-        if ($f2 <= 0) {
-            $f2 = "NO";
-        }
-        // Single Room =>
-        $f3 = $sr - $csr;
-        if ($f3 <= 0) {
-            $f3 = "NO";
-        }
-        // Deluxe Room =>
-        $f4 = $dr - $cdr;
-        if ($f4 <= 0) {
-            $f4 = "NO";
-        }
-        //total available room =>
-        $f5 = $r - $cr;
-        if ($f5 <= 0) {
-            $f5 = "NO";
-        }
-        ?>
-        <!-- room availablity end-->
-
-        <!-- ==== room book php ====-->
-        <?php
-        if (isset($_POST['guestdetailsubmit'])) {
-            $userID = $_POST['User'];
-            $Phone = $_POST['Phone'];
-            $RoomType = $_POST['RoomType'];
-            $NoofRoom = $_POST['NoofRoom'];
-            $Bed = $_POST['Bed'];
-            $Meal = $_POST['Meal'];
-            $cin = $_POST['cin'];
-            $cout = $_POST['cout'];
-            $note = $_POST['note'];
-            if ($Phone == "" || $NoofRoom == "" || $RoomType == "") {
-                echo "<script>swal({
-                        title: 'Fill the proper details',
-                        icon: 'error',
-                    });
-                    </script>";
-            } else {
-                $sta = "NotConfirm";
-                $sql = "INSERT INTO reservation(user_id,phone,room_type,no_room,no_bed,check_in,check_out,no_day,meal,status,note) VALUES ('$userID','$Phone','$RoomType','$NoofRoom','$Bed','$cin','$cout',datediff('$cout','$cin'),'$Meal','$sta','$note')";
-                $result = mysqli_query($conn, $sql);
-
-                // if($f1=="NO")
-                // {
-                //     echo "<script>swal({
-                //         title: 'Superior Room is not available',
-                //         icon: 'error',
-                //     });
-                //     </script>";
-                // }
-                // else if($f2=="NO")
-                // {
-                //     echo "<script>swal({
-                //         title: 'Guest House is not available',
-                //         icon: 'error',
-                //     });
-                //     </script>";
-                // }
-                // else if($f3 == "NO")
-                // {
-                //     echo "<script>swal({
-                //         title: 'Si Room is not available',
-                //         icon: 'error',
-                //     });
-                //     </script>";
-                // }
-                // else if($f4 == "NO")
-                // {
-                //     echo "<script>swal({
-                //         title: 'Deluxe Room is not available',
-                //         icon: 'error',
-                //     });
-                //     </script>";
-                // }
-                // else if($result = mysqli_query($conn, $sql))
-                // {
-                if ($result) {
-                    echo "<script>swal({
-                                title: 'Reservation successful',
-                                icon: 'success',
-                            });
-                        </script>";
-                } else {
-                    echo "<script>swal({
-                                    title: 'Something went wrong',
-                                    icon: 'error',
-                                });
-                        </script>";
-                }
-                // }
-            }
-        }
-        ?>
+        </div>
     </div>
 
 
     <!-- ================================================= -->
     <div class="searchsection">
         <input type="text" name="search_bar" id="search_bar" placeholder="search..." onkeyup="searchFun()">
-        <button id="adduser" class="adduser btn btn-success" onclick="adduseropen()">Đặt phòng</button>
-        <!-- <button class="adduser" id="adduser" onclick="adduseropen()"> Add</button> -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal">
+            Đặt phòng
+        </button> <!-- <button class="adduser" id="adduser" onclick="adduseropen()"> Add</button> -->
         <!-- <form action="./exportdata.php" method="post">
             <button class="exportexcel" id="exportexcel" name="exportexcel" type="submit"><i class="fa-solid fa-file-arrow-down"></i></button>
         </form> -->
@@ -272,7 +224,13 @@ include '../config.php';
 
     <div class="roombooktable" class="table-responsive-xl">
         <?php
-        $roombooktablesql = "SELECT reservation.*, user.name FROM reservation JOIN user ON reservation.user_id = user.id";
+        $roombooktablesql = "SELECT reservation.*, user.name AS username, room_type.name AS roomtypename, GROUP_CONCAT(service.name SEPARATOR ', ') AS listservice
+    FROM reservation
+    JOIN user ON reservation.user_id = user.id
+    JOIN room_type ON reservation.room_type = room_type.id
+    LEFT JOIN chosen_service ON reservation.id = chosen_service.reservation_id
+    LEFT JOIN service ON chosen_service.service_id = service.id
+    GROUP BY reservation.id";
         $roombookresult = mysqli_query($conn, $roombooktablesql);
         $nums = mysqli_num_rows($roombookresult);
         ?>
@@ -287,7 +245,7 @@ include '../config.php';
                     <th scope="col">Loại phòng</th>
                     <th scope="col">Số phòng</th>
                     <th scope="col">Số giường</th>
-                    <th scope="col">Đặt bữa</th>
+                    <th scope="col">Dịch vụ</th>
                     <th scope="col">Check-In</th>
                     <th scope="col">Check-Out</th>
                     <th scope="col">Số ngày</th>
@@ -304,27 +262,38 @@ include '../config.php';
                 ?>
                     <tr>
                         <td><?php echo $res['id'] ?></td>
-                        <td><?php echo $res['name'] ?></td>
+                        <td><?php echo $res['username'] ?></td>
                         <td><?php echo $res['phone'] ?></td>
-                        <td><?php echo $res['room_type'] ?></td>
+                        <td><?php echo $res['roomtypename'] ?></td>
                         <td><?php echo $res['no_room'] ?></td>
                         <td><?php echo $res['no_bed'] ?></td>
-                        <td><?php echo $res['meal'] ?></td>
+                        <td>
+                            <?php
+                            if (isset($res['listservice'])) {
+                                $services = explode(',', $res['listservice']);
+                                foreach ($services as $service) {
+                                    echo $service . '<br/>';
+                                }
+                            } else {
+                                echo '';
+                            }
+                            ?>
+                        </td>
                         <td><?php echo $res['check_in'] ?></td>
                         <td><?php echo $res['check_out'] ?></td>
                         <td><?php echo $res['no_day'] ?></td>
                         <td><?php echo $res['status'] ?></td>
                         <td><?php echo $res['note'] ?></td>
                         <td class="action">
-                            <?php
+                            <!-- <?php
                             if ($res['status'] == "Confirm") {
                                 echo " ";
                             } else {
                                 echo "<a href='roomconfirm.php?id=" . $res['id'] . "'><button class='btn btn-success'>Confirm</button></a>";
                             }
-                            ?>
+                            ?> -->
                             <a href="roombookedit.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Sửa</button></a>
-                            <a href="roombookdelete.php?id=<?php echo $res['id'] ?>"><button class='btn btn-danger'>Xóa</button></a>
+                            <a href="roombook.php?delete=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc không?')"><button class='btn btn-danger'>Xóa</button></a>
                         </td>
                     </tr>
                 <?php

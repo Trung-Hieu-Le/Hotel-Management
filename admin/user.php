@@ -1,7 +1,4 @@
-<?php
-session_start();
-include '../config.php';
-?>
+<?php include 'header.php'; ?>
 
 <?php
         //Xóa
@@ -43,10 +40,10 @@ include '../config.php';
         }
         ?>
 
-<?php include 'header.php'; ?>
-
+<?php include('sidebar.php')?>
+  <div class="main-content">
     <div class="searchsection">
-        <input type="text" name="search_bar" id="search_bar" placeholder="search..." onkeyup="searchFun()">
+        <input type="text" name="search_bar" id="search_bar" placeholder="Nhập từ khóa tìm kiếm..." onkeyup="searchFun()">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
             Thêm người dùng
         </button>
@@ -150,6 +147,6 @@ include '../config.php';
             </tbody>
         </table>
     </div>
-
+  </div>
     <?php include 'footer.php'; ?>
 

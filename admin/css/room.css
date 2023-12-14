@@ -39,6 +39,7 @@ body {
 }
 
 .addroomsection form{
+    width: 90%;
     height: 100%;
     display: flex;
     justify-content: space-evenly;
@@ -62,8 +63,8 @@ body {
 .room{
     display: flex;
     position: relative;
-    top: 80px;
-    height: 85vh;
+    /* top: 80px; */
+    height: 89vh;
     overflow-y: scroll;
     justify-content: space-evenly;
     flex-wrap: wrap;
@@ -75,7 +76,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    color: #0a0d2d;
+    color: #d0d0d0;
     text-shadow: var(--bg-text-shadow);
     border-radius: 10px;
 }

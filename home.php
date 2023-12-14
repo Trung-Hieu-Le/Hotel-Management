@@ -20,44 +20,6 @@
           <h2 class="welcometag">Chào mừng đến với Sparrow Hotel</h2>
         </div>
 
-        <?php
-        if (isset($_POST['guestdetailsubmit'])) {
-          $Phone = $_POST['Phone'];
-          $RoomType = $_POST['RoomType'];
-          $NoofRoom = $_POST['NoofRoom'];
-          $Bed = $_POST['Bed'];
-          $Meal = $_POST['Meal'];
-          $cin = $_POST['cin'];
-          $cout = $_POST['cout'];
-          $note = $_POST['note'];
-
-          if ($Phone == "" || $NoofRoom == "" || $RoomType == "") {
-            echo "<script>swal({
-                        title: 'Điền đầy đủ thông tin',
-                        icon: 'error',
-                    });
-                    </script>";
-          } else {
-            $sta = "NotConfirm";
-            $sql = "INSERT INTO reservation(user_id,phone,room_type,no_room,no_bed,check_in,check_out,no_day,meal,status,note) VALUES ('$userID','$Phone','$RoomType','$NoofRoom','$Bed','$cin','$cout',datediff('$cout','$cin')+1a,'$Meal','$sta','$note')";
-            $result = mysqli_query($conn, $sql);
-
-            if ($result) {
-              echo "<script>swal({
-                                title: 'Đặt phòng thành công',
-                                icon: 'success',
-                            });
-                        </script>";
-            } else {
-              echo "<script>swal({
-                                    title: 'Xin vui lòng thử lại',
-                                    icon: 'error',
-                                });
-                        </script>";
-            }
-          }
-        }
-        ?>
       </div>
 
       </div>
@@ -69,6 +31,7 @@
         <h1 class="head">
           << Phòng>>
         </h1>
+        <!-- TODO: Chi tiết -->
         <div class="roomselect">
           <div class="roombox">
             <div class="hotelphoto h1" style="background-image: url(./image/hotel1photo.webp);"></div>
@@ -139,7 +102,7 @@
       </h1>
       <div class=" owl-carousel owl-theme p-3">
         <?php
-        $sql = "SELECT * FROM service";
+        $sql = "SELECT * FROM service WHERE status = 1";
         $result = $conn->query($sql) or die($conn->error);
 
         if ($result->num_rows > 0) {
@@ -160,7 +123,7 @@
       </h1>
       <div class="owl-carousel owl-theme p-3">
         <?php
-        $sql = "SELECT *, user.name FROM feedback JOIN user ON user.id=feedback.user_id WHERE status=0";
+        $sql = "SELECT *, user.name FROM feedback JOIN user ON user.id=feedback.user_id WHERE status = 1";
         $result = $conn->query($sql) or die($conn->error);
 
         if ($result->num_rows > 0) {
@@ -177,7 +140,7 @@
               </div>
               <p class="text-muted fst-italic mb-0">
                 <?php $timestamp = strtotime($row['created_at']);
-                  echo date('d-m-Y H:i:s', $timestamp); ?></p>
+                  echo date('H:i:s d/m/Y', $timestamp); ?></p>
               <p class="text-muted fst-italic mb-0"><?php echo $row['name']; ?></p>
               <h5>"<?php echo $row['content']; ?>"</h5>
             </div>
@@ -188,10 +151,17 @@
       </div>
 
     </section>
-
+    <section id="contactus">
+    <div class="social">
+      <i class="fa-brands fa-instagram"></i>
+      <i class="fa-brands fa-facebook"></i>
+      <i class="fa-solid fa-envelope"></i>
+    </div>
+    </section>
   </body>
+<script src="./javascript/home.js"></script>
+</html>
 
-  <?php include 'footer.php' ?>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -202,7 +172,7 @@
       nav: false,
       autoplay: true,
       autoplayTimeout: 3000,
-      center: true,
+      center: false,
       responsive: {
         0: {
           items: 1

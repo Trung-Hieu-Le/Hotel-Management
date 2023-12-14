@@ -76,10 +76,18 @@ session_start();
                         $_SESSION['userPhone'] = $Phone;
                         $Phone = "";
                         $Password = "";
-                        header("Location: home.php");
+                        echo "<script>
+                        swal({
+                            title: 'Đăng nhập thành công',
+                            icon: 'success',
+                            }).then(function() {
+                            window.location.href = 'home.php';
+                        });
+                        </script>";
+                        // header("Location: home.php");
                     } else {
                         echo "<script>swal({
-                            title: 'Có lỗi xảy ra, xin vui lòng thử lại!',
+                            title: 'Sai số điện thoại hoặc mật khẩu. Vui lòng thử lại',
                             icon: 'error',
                         });
                         </script>";
@@ -121,7 +129,15 @@ session_start();
                         $_SESSION['staffPhone'] = $Phone;
                         $Phone = "";
                         $Password = "";
-                        header("Location: admin/admin.php");
+                        echo "<script>
+                        swal({
+                            title: 'Đăng nhập thành công',
+                            icon: 'success',
+                            }).then(function() {
+                            window.location.href = 'admin/dashboard.php';
+                        });
+                        </script>";
+                        // header("Location: admin/admin.php");
                     } else {
                         echo "<script>swal({
                                 title: 'Có lỗi xảy ra, xin vui lòng thử lại!',
@@ -187,6 +203,14 @@ session_start();
                                 $Phone = "";
                                 $Password = "";
                                 $CPassword = "";
+                                echo "<script>
+                        swal({
+                            title: 'Đăng kí thành công',
+                            icon: 'success',
+                            }).then(function() {
+                            window.location.href = 'home.php';
+                        });
+                        </script>";
                                 header("Location: home.php");
                             } else {
                                 echo "<script>swal({

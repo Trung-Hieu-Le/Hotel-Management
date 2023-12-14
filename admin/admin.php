@@ -1,12 +1,11 @@
-<?php
+<!-- <?php
 
 include '../config.php';
 session_start();
 
-// page redirect
-$userID="";
-$userID=$_SESSION['userID'];
-if($userID == true){
+$staffID="";
+$staffID=$_SESSION['staffID'];
+if($staffID == true){
 
 }else{
     header("Location: http://{$_SERVER['HTTP_HOST']}/Hotel-Management/index.php");
@@ -22,20 +21,13 @@ if($userID == true){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/admin.css">
-    <!-- loading bar -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script> -->
-    <!-- fontowesome -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <title>Sparrow Hotel - Admin</title>
 </head>
 
 <body>
-    <!-- mobile view -->
-    <!-- <div id="mobileview">
-        <h5>Admin panel doesn't show in mobile view</h4>
-    </div> -->
-  
-    <!-- nav bar -->
+   
     <nav class="uppernav">
         <div class="logo">
             <img class="bluebirdlogo" src="../image/bluebirdlogo.png" alt="logo">
@@ -47,11 +39,7 @@ if($userID == true){
     </nav>
     <nav class="sidenav">
         <ul>
-            <!-- <a href="dashboard.php">
-            <li class="pagebtn active text-white">
-                <img src="../image/icon/dashboard.png">&nbsp&nbsp&nbsp Thống kê
-            </li>
-        </a> -->
+            
             <li class="pagebtn active"><img src="../image/icon/dashboard.png">&nbsp&nbsp&nbsp Thống kê</li>
             <li class="pagebtn"><img src="../image/icon/bed.png">&nbsp&nbsp&nbsp Đặt phòng</li>
             <li class="pagebtn"><img src="../image/icon/wallet.png">&nbsp&nbsp&nbsp Thanh toán</li>            
@@ -64,7 +52,6 @@ if($userID == true){
         </ul>
     </nav>
 
-    <!-- main section -->
     <div class="mainscreen">
         <iframe class="frames frame1 active" src="./dashboard.php" frameborder="0"></iframe>
         <iframe class="frames frame2" src="./reservation.php" frameborder="0"></iframe>
@@ -80,4 +67,4 @@ if($userID == true){
 
 <script src="./javascript/script.js"></script>
 
-</html>
+</html> -->

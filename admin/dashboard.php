@@ -1,6 +1,8 @@
+<?php include('header.php')?>
+
 <?php
-    session_start();
-    include '../config.php';
+    // session_start();
+    // include '../config.php';
 
     // roombook
     $roombooksql ="Select * from room join chosen_room on chosen_room.room_id=room.id
@@ -15,7 +17,7 @@
     $staffrow = mysqli_num_rows($staffre);
 
     // room
-    $roomsql ="Select * from room";
+    $roomsql ="Select * from room where status <> 0";
     $roomre = mysqli_query($conn, $roomsql);
     $roomrow = mysqli_num_rows($roomre);
 
@@ -33,30 +35,22 @@
               $chart_data .= "{ date:'".date('d-m-Y', strtotime($row["created_at"]))."', profit:".$row["final_total"] ."}, ";
               $tot = $tot + $row["final_total"];
 					}
-
 					$chart_data = substr($chart_data, 0, -2);
-				
+
+
+        $query = "SELECT status, COUNT(*) as total FROM reservation GROUP BY status";
+        $result = mysqli_query($conn, $query);
+
+        $statusData = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+          // Lưu số lượng của mỗi loại status vào mảng $statusData
+          $statusData[] = $row['total'];
+        }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/dashboard.css">
-    <!-- chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- morish bar -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-
-    <title>Sparrow Hotel - Admin</title>
-</head>
-<body>
+<!-- TODO: Style dashboard -->
+  <?php include('sidebar.php')?>
+  <div class="main-content">
    <div class="databox">
         <div class="box roombookbox">
           <h2>Tổng số phòng được đặt</h1>  
@@ -72,52 +66,54 @@
         </div>
     </div>
     <div class="chartbox">
-        <!-- <div class="bookroomchart">
-            <canvas id="bookroomchart"></canvas>
-            <h3 style="text-align: center;margin:10px 0;">Các phòng được đặt</h3>
-        </div> -->
-        <div class="profitchart" >
-            <div id="profitchart"></div>
-            <h3 style="text-align: center;margin:10px 0;">Doanh thu</h3>
-        </div>
+      <div class="profitchart" >
+        <div id="profitchart"></div>
+        <h3 style="text-align: center;margin:10px 0;">Doanh thu</h3>
+      </div>
+      <div class="bookroomchart">
+          <canvas id="bookroomchart"></canvas>
+          <h3 style="text-align: center;margin:10px 0;">Tỉ lệ đặt phòng</h3>
+      </div>
     </div>
+  </div>
 </body>
 
 
 
-<!-- <script>
-        const labels = [
-          'Superior Room',
-          'Deluxe Room',
-          'Guest House',
-          'Single Room',
-        ];
-      
-        const data = {
-          labels: labels,
-          datasets: [{
-            label: 'My First dataset',
+<script>
+    // Các nhãn (labels) và màu sắc cho từng loại status
+    const labels = [
+        'Chưa thanh toán',
+        'Đã thanh toán',
+        'Hủy đặt phòng'
+    ];
+
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Số đơn đặt phòng',
             backgroundColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 159, 64, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(153, 102, 255, 1)',
+              'rgba(51, 153, 225, 1)',
+              'rgba(51, 255, 51, 1)',
+              'rgba(255, 51, 51, 1)',
             ],
             borderColor: 'black',
-            data: [<?php echo $chartroom1row ?>,<?php echo $chartroom2row ?>,<?php echo $chartroom3row ?>,<?php echo $chartroom4row ?>],
-          }]
-        };
-  
-        const doughnutchart = {
-          type: 'doughnut',
-          data: data,
-          options: {}
-        };
-        
-      const myChart = new Chart(
-      document.getElementById('bookroomchart'),
-      doughnutchart);
-</script> -->
+            data: <?php echo json_encode($statusData); ?>, 
+        }]
+    };
+
+    const doughnutChart = {
+        type: 'doughnut',
+        data: data,
+        options: {} 
+    };
+
+    const myChart = new Chart(
+        document.getElementById('bookroomchart'),
+        doughnutChart
+    );
+</script>
+
 
 <script>
 Morris.Bar({

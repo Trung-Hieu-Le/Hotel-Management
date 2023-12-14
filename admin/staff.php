@@ -1,7 +1,8 @@
+<?php include 'header.php'; ?>
+
 <?php
-session_start();
-include '../config.php';
-?>
+        //Xóa
+        if (isset($_GET['delete'])) {
 
         $id = $_GET['delete'];
         $roomdeletesql = "DELETE FROM staff WHERE id = $id";
@@ -35,10 +36,10 @@ include '../config.php';
         }
         ?>
 
-<?php include 'header.php'; ?>
-
+<?php include('sidebar.php')?>
+  <div class="main-content">
 <div class="searchsection">
-        <input type="text" name="search_bar" id="search_bar" placeholder="search..." onkeyup="searchFun()">
+        <input type="text" name="search_bar" id="search_bar" placeholder="Nhập từ khóa tìm kiếm..." onkeyup="searchFun()">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaffModal">
             Thêm nhân viên
         </button>
@@ -108,19 +109,43 @@ include '../config.php';
         $sql = "select * from staff";
         $re = mysqli_query($conn, $sql)
         ?>
-        <?php
-        while ($row = mysqli_fetch_array($re)) {
-            echo "<div class='roombox'>
-						<div class='text-center no-boder'>
-                        <img src='../image/icon/staff.png' width=80 height=80>
-                        <h3>" . $row['name'] . "</h3>
-                            <div class='mb-1'>" . $row['role'] . "</div>
-                            <a href=''><button class='btn btn-primary'>Sửa</button></a>
-                            <a href='staffdelete.php?id=" . $row['id'] . "'><button class='btn btn-danger'>Xóa</button></a>
-						</div>
-                    </div>";
-        }
-        ?>
-    </div>
+        <table class="table table-bordered" id="table-data">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Vị trí</th>
+                    <th scope="col">SĐT</th>
+                    <th scope="col">Địa chỉ</th>
+                    <th scope="col">Email</th>
+                    <!-- <th scope="col">Password</th> -->
+                    <th scope="col" class="action">Hành động</th>
+                    <!-- <th>Delete</th> -->
+                </tr>
+            </thead>
 
+            <tbody>
+                <?php
+                while ($res = mysqli_fetch_array($re)) {
+                ?>
+                    <tr style="height:80px;">
+                        <td><?php echo $res['id'] ?></td>
+                        <td><?php echo $res['name'] ?></td>
+                        <td><?php echo $res['role'] ?></td>
+                        <td><?php echo $res['phone'] ?></td>
+                        <td><?php echo $res['address'] ?></td>
+                        <td><?php echo $res['email'] ?></td>
+                      
+                        <td class="action">
+                            <a href="staffedit.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Sửa</button></a>
+                            <a href="staff.php?delete=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc không?')"><button class='btn btn-danger'>Xóa</button></a>
+                        </td>
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+  </div>
     <?php include 'footer.php'; ?>

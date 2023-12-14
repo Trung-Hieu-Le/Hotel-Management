@@ -1,7 +1,5 @@
-<?php
-session_start();
-include '../config.php';
-?>
+<?php include 'header.php'; ?>
+
 <?php
 // Xử lý xóa phòng
 if (isset($_GET['delete'])) {
@@ -39,10 +37,10 @@ if (isset($_POST['addroom'])) {
 }
 ?>
 
-<?php include 'header.php'; ?>
-
+<?php include('sidebar.php')?>
+  <div class="main-content">
 <div class="searchsection">
-    <input type="text" name="search_bar" id="search_bar" placeholder="search..." onkeyup="searchFun()">
+    <input type="text" name="search_bar" id="search_bar" placeholder="Nhập từ khóa tìm kiếm..." onkeyup="searchFun()">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">
         Thêm phòng
     </button>
@@ -67,7 +65,7 @@ if (isset($_POST['addroom'])) {
                             <select name="troom" class="form-control" required>
                                 <option disabled>Loại phòng</option>
                                 <?php
-                                $roomtypesql = "SELECT id, name FROM room_type WHERE status=1 ";
+                                $roomtypesql = "SELECT id, name FROM room_type WHERE status = 1 ";
                                 $roomtyperesult = mysqli_query($conn, $roomtypesql);
                                 if (mysqli_num_rows($roomtyperesult) > 0) {
                                     while ($row = mysqli_fetch_assoc($roomtyperesult)) {
@@ -165,5 +163,5 @@ if (isset($_POST['addroom'])) {
         </tbody>
     </table>
 </div>
-
+  </div>
 <?php include 'footer.php'; ?>
