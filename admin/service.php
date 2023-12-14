@@ -1,7 +1,5 @@
-<?php
-session_start();
-include '../config.php';
-?>
+<?php include 'header.php'; ?>
+
 <?php
 //Xóa
 if (isset($_GET['delete'])) {
@@ -20,117 +18,124 @@ if (isset($_GET['delete'])) {
 //Thêm
 if (isset($_POST['addservice'])) {
     $name = $_POST['name'];
+    $image = $_POST['image'];
     $price = $_POST['price'];
     $description = $_POST['description'];
     $status = $_POST['status'];
-    // TODO: Tránh trùng service
-    $sql = "INSERT INTO service(name,price,description,status) VALUES ('$name', '$price','$description','$status')";
-    $result = mysqli_query($conn, $sql);
-    if ($result) {
-        header("Location: service.php");
+
+    $check_query = "SELECT * FROM service WHERE name = '$name'";
+    $check_result = mysqli_query($conn, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo "<script>alert('Dịch vụ đã tồn tại');</script>";
+    } else {
+        $sql = "INSERT INTO service(name,image,price,description,status) VALUES ('$name','$image','$price','$description',b'$status')";
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            header("Location: service.php");
+        } else {
+            echo "<script>alert('Lỗi khi thêm dịch vụ');</script>";
+        }
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueBird - Admin</title>
-    <!-- fontowesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- boot -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/room.css">
-    <style>
-        .roombox {
-            background-color: #d1d7ff;
-            padding: 10px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="addroomsection">
-        <form action="" method="POST">
-            <div class="h-100 py-2">
-                <div class="row h-100">
-                    <div class="col-4">
-                        <label for="name">Tên dịch vụ :</label>
-                        <input type="text" name="name" class="form-control">
-                    </div>
-                    <div class="col-4">
-                        <label for="price">Giá :</label>
-                        <input type="text" name="price" class="form-control" pattern="{0,9}+">
-                    </div>
-                    <div class="col-4">
-                        <label for="description">Mô tả :</label>
-                        <input type="text" name="description" class="form-control">
-                    </div>
-                </div>
-                <div class="row h-100">
-                    <div class="col-4">
-                        <label for="status">Trạng thái:</label>
-                        <select name="status" class="form-control">
-                            <option value="1" selected>Hoạt động</option>
-                            <option value="0">Không hoạt động</option>
-                        </select>
-                    </div>
-
-                    <div class="col-4 d-flex align-items-end">
-                        <button type="submit" class="btn btn-success" name="addservice">Thêm dịch vụ</button>
-                    </div>
-                </div>
+<?php include('sidebar.php')?>
+  <div class="main-content">
+<div class="searchsection">
+    <input type="text" name="search_bar" id="search_bar" placeholder="Nhập từ khóa tìm kiếm..." onkeyup="searchFun()">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+        Thêm dịch vụ
+    </button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:750px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm dịch vụ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </form>
+            <form action="" method="POST">
+                <div class="modal-body">
+                    <div class="row h-100">
+                        <div class="col-lg-4">
+                            <label for="name">Tên :</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="image">Hình ảnh :</label>
+                            <input type="text" name="image" class="form-control" required>
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="price">Giá :</label>
+                            <input type="text" name="price" class="form-control" pattern="[0-9]+" title="Nhập số từ 0-9" required>
+                        </div>
 
-
+                    </div>
+                    
+                    <div class="row h-100">
+                        <div class="col-lg-6">
+                            <label for="description">Mô tả :</label>
+                            <input type="text" name="description" class="form-control">
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="status">Trạng thái:</label>
+                            <select name="status" class="form-control" required>
+                                <option value="1" selected>Hoạt động</option>
+                                <option value="0">Không hoạt động</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" name="addservice">Thêm dịch vụ</button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
 
-    <div class="room">
-        <?php
-        $sql = "select * from service";
-        $re = mysqli_query($conn, $sql)
-        ?>
-        <table class="table table-bordered" id="table-data">
-            <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Tên</th>
-                    <th scope="col">Giá</th>
-                    <th scope="col">Mô tả</th>
-                    <th scope="col">Trạng thái</th>
-                    <th scope="col" class="action">Hành động</th>
-                    <!-- <th>Delete</th> -->
+<div class="room">
+    <?php
+    $sql = "select * from service";
+    $re = mysqli_query($conn, $sql)
+    ?>
+    <table class="table table-bordered" id="table-data">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Tên</th>
+                <th scope="col">Ảnh</th>
+                <th scope="col">Giá</th>
+                <th scope="col">Mô tả</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col" class="action">Hành động</th>
+                <!-- <th>Delete</th> -->
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php
+            while ($res = mysqli_fetch_array($re)) {
+            ?>
+                <tr style="height:80px;">
+                    <td><?php echo $res['id'] ?></td>
+                    <td><?php echo $res['name'] ?></td>
+                    <td><img src='../image/service/<?php echo $res["image"]; ?>' style="width:100px; height:100px;"></td>
+                    <td><?php echo $res['price'] ?></td>
+                    <td><?php echo $res['description'] ?></td>
+                    <td><?php echo $res['status'] == 0 ? 'Không hoạt động' : 'Hoạt động'; ?></td>
+                    <td class="action">
+                        <a href="serviceedit.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Sửa</button></a>
+                        <a href="service.php?delete=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc không?')"><button class='btn btn-danger'>Xóa</button></a>
+                    </td>
                 </tr>
-            </thead>
-
-            <tbody>
-                <?php
-                while ($res = mysqli_fetch_array($re)) {
-                ?>
-                    <tr style="height:80px;">
-                        <td><?php echo $res['id'] ?></td>
-                        <td><?php echo $res['name'] ?></td>
-                        <td><?php echo $res['price'] ?></td>
-                        <td><?php echo $res['description'] ?></td>
-                        <td><?php echo $res['status'] == 0 ? 'Không hoạt động' : 'Hoạt động'; ?></td>
-                        <td class="action">
-                            <a href="serviceedit.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Sửa</button></a>
-                            <a href="service.php?delete=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc không?')"><button class='btn btn-danger'>Xóa</button></a>
-                        </td>
-                    </tr>
-                <?php
-                }
-                ?>
-            </tbody>
-        </table>
-    </div>
-
-</body>
-
-</html>
+            <?php
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+  </div>
+<?php include 'footer.php'; ?>

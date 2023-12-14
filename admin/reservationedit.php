@@ -1,6 +1,6 @@
+<?php include 'header.php'; ?>
 <?php
 
-include '../config.php';
 
 // fetch room data
 $id = $_GET['id'];
@@ -98,9 +98,8 @@ if (isset($_POST['guestdetailedit'])) {
 }
 ?>
 
-
-<?php include 'header.php'; ?>
-
+<?php include('sidebar.php')?>
+  <div class="main-content">
     <div style="max-width:1000px; border: 1px solid black; margin: 50px auto;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="bookingModalLabel">ĐẶT PHÒNG - SỬA THÔNG TIN:</h5>
@@ -156,10 +155,12 @@ if (isset($_POST['guestdetailedit'])) {
                             <!-- Dropdown -->
                             <div>
                                 <label for="roomSelect" class="form-label">Phòng:</label>
-                                <select name="room[]" class="select multiselect" multiple required>
+                                <select name="room[]" class="select multiselect" required style="width:100%;"
+                                multiple multiselect-search="true" multiselect-select-all="true">
                                     <option value="" disabled>Phòng</option>
                                     <?php
-                                    $roomsql = "SELECT id, name FROM room";
+                                    // TODO: Sửa cái này
+                                    $roomsql = "SELECT id, name FROM room WHERE status <> 0";
                                     $roomresult = mysqli_query($conn, $roomsql);
                                     if (mysqli_num_rows($roomresult) > 0) {
                                         while ($row = mysqli_fetch_assoc($roomresult)) {
@@ -172,10 +173,11 @@ if (isset($_POST['guestdetailedit'])) {
                             </div>
                             <div>
                                 <label for="serviceSelect" class="form-label">Dịch vụ:</label>
-                                <select name="service[]" class="select multiselect" id="multiService" multiple>
+                                <select name="service[]" class="select multiselect" id="multiService" style="width:100%;"
+                                multiple multiselect-search="true" multiselect-select-all="true">
                                     <option value="" disabled>Dịch vụ</option>
                                     <?php
-                                    $servicesql = "SELECT id, name FROM service";
+                                    $servicesql = "SELECT id, name FROM service WHERE status = 1";
                                     $serviceresult = mysqli_query($conn, $servicesql);
                                     if (mysqli_num_rows($serviceresult) > 0) {
                                         while ($row = mysqli_fetch_assoc($serviceresult)) {
@@ -208,4 +210,5 @@ if (isset($_POST['guestdetailedit'])) {
                     </div>
                 </form>
             </div>
-            <?php include 'footer.php'; ?>
+  </div>
+<?php include 'footer.php'; ?>

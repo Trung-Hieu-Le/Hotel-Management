@@ -1,7 +1,5 @@
-<?php
-session_start();
-include '../config.php';
-?>
+<?php include 'header.php'; ?>
+
 <?php
                 // Xử lý xóa phòng
                 if (isset($_GET['delete'])) {
@@ -40,10 +38,10 @@ include '../config.php';
         }
         ?>
 
-<?php include 'header.php'; ?>
-
+<?php include('sidebar.php')?>
+  <div class="main-content">
 <div class="searchsection">
-    <input type="text" name="search_bar" id="search_bar" placeholder="search..." onkeyup="searchFun()">
+    <input type="text" name="search_bar" id="search_bar" placeholder="Nhập từ khóa tìm kiếm..." onkeyup="searchFun()">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomTypeModal">
         Thêm loại phòng
     </button>
@@ -137,5 +135,5 @@ include '../config.php';
             </tbody>
         </table>
     </div>
-
-    <?php include 'footer.php'; ?>
+  </div>
+<?php include 'footer.php'; ?>

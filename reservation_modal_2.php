@@ -32,15 +32,15 @@ if (isset($_POST['reservationSubmit'])) {
                     $sql = "INSERT INTO chosen_room (reservation_id, room_id) VALUES ('$reservationId', '$room_id')";
                     $result2 = mysqli_query($conn, $sql);
                     if (!$result2) {
-                        echo "<script>console.error('Lỗi khi chọn phòng: " . mysqli_error($conn) . "');</script>";
+                        echo "<script>alert('Có lỗi xảy ra khi thêm phòng');</script>";
                     } else {
                         $update_status_sql = "UPDATE room
-                                              INNER JOIN reservation ON reservation.id = '$reservationId'
+                                              JOIN chosen_room ON room.id = chosen_room.room_id
                                               SET room.status = 2
-                                              WHERE room.id = '$room_id' AND reservation.status = 0";
+                                              WHERE room.id = '$room_id' AND chosen_room.reservation_id = $reservationId";
                         $update_status_result = mysqli_query($conn, $update_status_sql);
                         if (!$update_status_result) {
-                            echo "<script>console.error('Lỗi khi cập nhật trạng thái phòng: " . mysqli_error($conn) . "');</script>";
+                            echo "<script>alert('Có lỗi xảy ra khi cập nhật trạng thái phòng');</script>";
                         }
                     }
                 }
@@ -51,24 +51,24 @@ if (isset($_POST['reservationSubmit'])) {
                     $result3 = mysqli_query($conn, $sql);
                     if (!$result3) {
                         // Handle the error, for example, log it or display a message
-                        echo "<script>console.error('Lỗi khi chọn dịch vụ: " . mysqli_error($conn) . "');</script>";
+                        echo "<script>alert('Có lỗi xảy ra khi thêm dịch vụ');</script>";
                     }
                 }
             }
             
-            echo "<script>swal({
+            echo "<script>
+                        swal({
                             title: 'Đặt phòng thành công',
                             icon: 'success',
+                        }).then(function() {
+                            window.location.href = 'home.php';
                         });
                     </script>";
-                    header("Location: home.php");
+                    // header("Location: home.php");
 
         } else {
-            echo "<script>swal({
-                                title: 'Xin vui lòng thử lại',
-                                icon: 'error',
-                            });
-                    </script>";
+            echo "<script>alert('Có lỗi xảy ra');</script>";
+
         }
 }
 ?>
@@ -112,16 +112,17 @@ if (isset($_POST['reservationSubmit'])) {
                             <?php 
                                 echo "<p>Ngày nhận phòng: ".date('d-m-Y', strtotime($_GET["cin"]))."</p>";
                                 echo "<p>Ngày trả phòng: ".date('d-m-Y', strtotime($_GET["cout"]))."</p>";
+                                // TODO: Số hành khách khi thay đổi
                                 echo "<p>Số hành khách: ".$_GET["no_guess"]."</p>";
                                 echo "<p>Số phòng: ".$_GET["no_room"]."</p>";
                             ?>
                             <!-- Dropdown Dịch vụ -->
                             <div>
                                 <label for="serviceSelect" class="form-label">Dịch vụ:</label>
-                                <select name="service[]" class="select multiselect" id="multiService" multiple>
-                                    <option value="" disabled>Dịch vụ</option>
+                                <select name="service[]" class="select multiselect" id="multiService" style="width:100%;"
+                                multiple multiselect-search="true" multiselect-select-all="true">
                                     <?php
-                                    $servicesql = "SELECT id, name, price FROM service";
+                                    $servicesql = "SELECT id, name, price FROM service WHERE status = 1";
                                     $serviceresult = mysqli_query($conn, $servicesql);
                                     if (mysqli_num_rows($serviceresult) > 0) {
                                         while ($row = mysqli_fetch_assoc($serviceresult)) {
@@ -167,8 +168,11 @@ if (isset($_POST['reservationSubmit'])) {
         for (const option of selectedServices) {
         totalService += parseInt(option.getAttribute('data-price'));
         }
-        const total = totalRoom + totalService;
-        document.getElementById('totalPriceService').textContent = totalService;
+        const noGuess = parseInt("<?php echo $_GET['no_guess']; ?>");
+        const totalServiceWithGuest = totalService * noGuess;
+        console.log(totalServiceWithGuest);
+        const total = totalRoom + totalServiceWithGuest;
+        document.getElementById('totalPriceService').textContent = totalServiceWithGuest;
         document.getElementById('totalPrice').textContent = total;
 }
 </script>

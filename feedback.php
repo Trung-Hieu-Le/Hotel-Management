@@ -22,9 +22,11 @@ if (isset($_POST['feedbackSubmit'])) {
         echo "<script>swal({
                             title: 'Đánh giá thành công',
                             icon: 'success',
+                        }).then(function() {
+                            window.location.href = 'reservation_history.php';
                         });
                     </script>";
-        header("Location: reservation_history.php");
+        // header("Location: reservation_history.php");
     } else {
         echo "<script>swal({
                                 title: 'Xin vui lòng thử lại',

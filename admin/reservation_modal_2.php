@@ -1,5 +1,6 @@
+<?php include 'header.php'; ?>
+
 <?php
-include '../config.php';
 
 //Thêm vào bảng reservation
 if (isset($_POST['reservationSubmit'])) {
@@ -29,7 +30,7 @@ if (isset($_POST['reservationSubmit'])) {
                     //     echo "<script>console.error('Lỗi khi chọn phòng: " . mysqli_error($conn) . "');</script>";
                     // }
                     if (!$result2) {
-                        echo "<script>console.error('Lỗi khi chọn phòng: " . mysqli_error($conn) . "');</script>";
+                        echo "<script>alert('Có lỗi xảy ra khi thêm phòng');</script>";
                     } else {
                         $update_status_sql = "UPDATE room
                         JOIN chosen_room ON room.id = chosen_room.room_id
@@ -43,7 +44,7 @@ if (isset($_POST['reservationSubmit'])) {
                         WHERE room.id = '$room_id' AND reservation.id = '$reservationId';";
                         $update_status_result = mysqli_query($conn, $update_status_sql);
                         if (!$update_status_result) {
-                            echo "<script>console.error('Lỗi khi cập nhật trạng thái phòng: " . mysqli_error($conn) . "');</script>";
+                            echo "<script>alert('Có lỗi xảy ra khi cập nhật phòng');</script>";
                         }
                     }
                 }
@@ -53,7 +54,7 @@ if (isset($_POST['reservationSubmit'])) {
                     $sql = "INSERT INTO chosen_service (reservation_id, service_id) VALUES ('$reservationId', '$service_id')";
                     $result3 = mysqli_query($conn, $sql);
                     if (!$result3) {
-                        echo "<script>console.error('Lỗi khi chọn dịch vụ: " . mysqli_error($conn) . "');</script>";
+                        echo "<script>alert('Có lỗi xảy ra khi thêm dịch vụ');</script>";
                     }
                 }
             }
@@ -66,36 +67,13 @@ if (isset($_POST['reservationSubmit'])) {
                     header("Location: reservation.php");
 
         } else {
-            echo "<script>swal({
-                                title: 'Xin vui lòng thử lại',
-                                icon: 'error',
-                            });
-                    </script>";
+            echo "<script>alert('Có lỗi xảy ra');</script>";
+
         }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- boot -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <!-- fontowesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- sweet alert -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="./css/roombook.css">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
-    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.0/dist/js/multi-select-tag.js"></script>
-</head>
-
-<body>
-    <div>
+<?php include('sidebar.php')?>
+  <div class="main-content">
         <div>
             <div>
                 <div class="modal-header">
@@ -140,10 +118,11 @@ if (isset($_POST['reservationSubmit'])) {
                             <!-- TODO: Sửa multi select -->
                             <div>
                                 <label for="serviceSelect" class="form-label">Dịch vụ:</label>
-                                <select name="service[]" class="select multiselect" id="multiService" multiple>
+                                <select name="service[]" class="select multiselect" id="multiService" style="width:100%;"
+                                multiple multiselect-search="true" multiselect-select-all="true">
                                     <option value="" disabled>Dịch vụ</option>
                                     <?php
-                                    $servicesql = "SELECT id, name, price FROM service";
+                                    $servicesql = "SELECT id, name, price FROM service WHERE status = 1";
                                     $serviceresult = mysqli_query($conn, $servicesql);
                                     if (mysqli_num_rows($serviceresult) > 0) {
                                         while ($row = mysqli_fetch_assoc($serviceresult)) {
@@ -168,6 +147,12 @@ if (isset($_POST['reservationSubmit'])) {
                         </div>
                     </div>
                     <div class="modal-footer">
+                    <div class="float-left">
+                        <p class="text-danger mb-0">Tiền phòng: <span><?php echo $_GET["total_price_room"] ?></span></p>
+                        <p class="text-danger mb-0">Tiền dịch vụ: <span id="totalPriceService">0</span></p>
+                        <hr style="margin: 0.25rem 0; color:red;">
+                        <p class="text-danger mb-0">Tổng tiền dự tính: <span id="totalPrice">0</span></p>
+                    </div>
                         <a href="reservation_modal_1.php" class="btn btn-secondary">
                             Quay lại
                         </a>
@@ -177,13 +162,13 @@ if (isset($_POST['reservationSubmit'])) {
             </div>
         </div>
     </div>
-</body>
 <!-- <script src="./javascript/roombook.js"></script> -->
 <!-- <script>
     document.getElementById('addCustomerBtn').addEventListener('click', function() {
         window.location.href = 'user.php?showAddUserModal=true';
     });
 </script> -->
+<?php include 'footer.php' ?>
 <script>
 document.querySelector('.select').addEventListener('change', function() {
     const selectedUserId = this.value;
@@ -194,13 +179,32 @@ document.querySelector('.select').addEventListener('change', function() {
                 const userDetails = xhr.responseText;
                 document.getElementById('userInfo').innerHTML = userDetails;
             } else {
-                console.error('Đã xảy ra lỗi');
+                console.error('Đã xảy ra lỗi khi chọn khách hàng');
             }
         }
     };
     xhr.open('GET', 'getUserDetails.php?userId=' + selectedUserId, true);
     xhr.send();
 });
-
 </script>
-</html>
+<script>
+    const totalRoom = parseInt("<?php echo $_GET['total_price_room']; ?>");
+    const multiService = document.getElementById('multiService');
+    let total = totalRoom;
+    document.getElementById('totalPrice').textContent = total;
+    multiService.addEventListener('change', updateTotalService);
+
+    function updateTotalService() {
+        const selectedServices = multiService.selectedOptions;
+        let totalService = 0;
+        for (const option of selectedServices) {
+        totalService += parseInt(option.getAttribute('data-price'));
+        }
+        const noGuess = parseInt("<?php echo $_GET['no_guess']; ?>");
+        const totalServiceWithGuest = totalService * noGuess;
+        console.log(totalServiceWithGuest);
+        const total = totalRoom + totalServiceWithGuest;
+        document.getElementById('totalPriceService').textContent = totalServiceWithGuest;
+        document.getElementById('totalPrice').textContent = total;
+}
+</script>

@@ -1,6 +1,5 @@
+<?php include 'header.php'; ?>
 <?php
-
-include '../config.php';
 
 // fetch room data
 $id = $_GET['id'];
@@ -22,22 +21,11 @@ if (isset($_POST['roomtypedetailedit'])) {
     $EditPrice = $_POST['price'];
     $EditStatus = $_POST['status'];
 
-    // if (empty($EditUserID) || empty($EditNoofRoom) || empty($EditRoomType)) {
-    //     echo "<script>swal({
-    //         title: 'Hãy nhập đầy đủ thông tin và ngày đi không được trước ngày đến',
-    //         icon: 'error',
-    //     });
-    //     </script>";
-    // }
-    // else {
+    
     $sql = "UPDATE room_type SET name = '$EditName', image = '$EditImage', description = '$EditDescription', status = b'$EditStatus', price = '$EditPrice' WHERE id = '$id'";
     $result = mysqli_query($conn, $sql);
     if ($result) {
-        echo "<script>swal({
-            title: 'Đặt phòng thành công',
-            icon: 'success',
-        });
-        </script>";
+        
         header("Location:roomtype.php");
     } else {
         echo "<script>alert('Lỗi khi sửa loại phòng');</script>";
@@ -46,8 +34,8 @@ if (isset($_POST['roomtypedetailedit'])) {
 
 ?>
 
-<?php include 'header.php'; ?>
-
+<?php include('sidebar.php')?>
+  <div class="main-content">
     <div style="max-width:1000px; border: 1px solid black; margin: 50px auto;">
         <div class="modal-header">
             <h5 class="modal-title" id="bookingModalLabel">SỬA THÔNG TIN LOẠI PHÒNG:</h5>
@@ -97,4 +85,5 @@ if (isset($_POST['roomtypedetailedit'])) {
             </div>
         </form>
     </div>
+  </div>
     <?php include 'footer.php'; ?>

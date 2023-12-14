@@ -1,29 +1,29 @@
-<?php
-session_start();
-include '../config.php';
+<?php include 'header.php'; ?>
 
-?>
 <?php
 //Xóa
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-
+    // TODO: sửa delete
     $deletesql = "DELETE FROM reservation WHERE id = $id";
-
     $result = mysqli_query($conn, $deletesql);
 
+    $deletesql = "DELETE FROM chosen_room WHERE reservation_id = $id";
+    $result = mysqli_query($conn, $deletesql);
+    
+    $deletesql = "DELETE FROM chosen_service WHERE reservation_id = $id";
+    $result = mysqli_query($conn, $deletesql);
     header("Location:reservation.php");
 }
 
 ?>
 
-<?php include 'header.php'; ?>
-    <!-- guestdetailpanel -->
-
 
     <!-- ================================================= -->
+<?php include('sidebar.php')?>
+  <div class="main-content">
     <div class="searchsection">
-        <input type="text" name="search_bar" id="search_bar" placeholder="search..." onkeyup="searchFun()">
+        <input type="text" name="search_bar" id="search_bar" placeholder="Nhập từ khóa tìm kiếm..." onkeyup="searchFun()">
         <a href="reservation_modal_1.php" class="btn btn-primary">
             Đặt phòng
         </a>
@@ -62,7 +62,7 @@ if (isset($_GET['delete'])) {
     -- JOIN room_type ON reservation.room_type = room_type.id
     LEFT JOIN chosen_service ON reservation.id = chosen_service.reservation_id
     LEFT JOIN service ON chosen_service.service_id = service.id
-    GROUP BY reservation.id";
+    GROUP BY reservation.id ORDER BY reservation.id DESC";
         $roombookresult = mysqli_query($conn, $roombooktablesql);
         // $nums = mysqli_num_rows($roombookresult);
         ?>
@@ -70,7 +70,7 @@ if (isset($_GET['delete'])) {
             <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Tên</th>
+                    <th scope="col">Tên khách</th>
                     <!-- <th scope="col">Email</th> -->
                     <!-- <th scope="col">Địa chỉ</th> -->
                     <th scope="col">SĐT</th>
@@ -106,14 +106,15 @@ if (isset($_GET['delete'])) {
                             }
                             ?>
                         </td>
-                        <td><?php echo $res['check_in'] ?></td>
-                        <td><?php echo $res['check_out'] ?></td>
+                        <td><?php echo date('d-m-Y', strtotime($res['check_in'])) ?></td>
+                        <td><?php echo date('d-m-Y', strtotime($res['check_out'])) ?></td>
                         <td><?php echo $res['no_day'] ?></td>
                         <td>
                             <?php
                             if ($res['status'] == 0) echo 'Chưa thanh toán';
                             elseif ($res['status'] == 1) echo 'Đã thanh toán';
-                            else echo 'Hủy đặt phòng';
+                            elseif ($res['status'] == 2) echo 'Hủy đặt phòng';
+                            else echo 'Chưa rõ trạng thái';
                             ?>
                         </td>
                         <td><?php echo $res['note'] ?></td>
@@ -131,7 +132,7 @@ if (isset($_GET['delete'])) {
             </tbody>
         </table>
     </div>
-
+  </div>
 <?php include 'footer.php'; ?>
 <script>
     let reservationID = null;

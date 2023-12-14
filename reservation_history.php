@@ -1,33 +1,36 @@
 <?php include 'header.php' ?>
 <?php
+if (isset($_SESSION['userID'])) {
+    $userID = $_SESSION['userID'];
+} else {
+    header("Location:index.php");
+}
+
 if (isset($_GET['cancel'])) {
     $reservationID = $_GET['cancel'];
-    $userID = $_GET['id'];
+    // $userID = $_GET['id'];
 
-    $sql = "UPDATE reservation SET status = 2 WHERE id = '$reservationID' AND user_id = '$userID'";
+    $sql = "UPDATE reservation SET status = 2 WHERE id = $reservationID";
     $result = mysqli_query($conn, $sql);
     $update_sql = "UPDATE room
-                    INNER JOIN reservation ON room.id = '$room_id' AND reservation.id = '$id'
-                    SET room.status = 1";
+                    JOIN chosen_room ON room.id = chosen_room.room_id
+                    SET room.status = 1
+                    WHERE chosen_room.reservation_id = '$reservationID'";
     $result2 = mysqli_query($conn, $update_sql);
     if ($result & $result2) {
         echo "<script>
                         swal({
-                            title: 'Cập nhật thành công',
+                            title: 'Hủy phòng thành công',
                             icon: 'success',
                         }).then(function() {
-                            window.location.href = 'reservation_history.php?id=$userID';
+                            window.location.href = 'reservation_history.php';
                         });
                     </script>";
     } else {
-        echo "<script>
-                        swal({
-                            title: 'Cập nhật thành công',
-                            icon: 'success',
-                        }).then(function() {
-                            window.location.href = 'reservation_history.php?id=$userID';
-                        });
-                    </script>";
+        echo "<script>swal({
+            title: 'Hủy phòng thất bại',
+            icon: 'error',
+        })</script>";
     }
 }
 ?>
@@ -70,7 +73,7 @@ if (isset($_GET['cancel'])) {
                             <?php if($res['status']==1){ ?>
                             <a href="feedback.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Đánh giá</button></a>
                             <?php } elseif ($res['status']==0) { ?>
-                            <a href="reservation_history.php?id=<?php echo $userID ?>&cancel=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc hủy đặt phòng này không?')"><button class="btn btn-primary">Hủy đặt phòng</button></a>
+                            <a href="reservation_history.php?cancel=<?php echo $res['id'] ?>" onclick="return confirm('Bạn có chắc hủy đặt phòng này không?')"><button class="btn btn-primary">Hủy đặt phòng</button></a>
                             <?php } ?>    
                         </td>
                     </tr>

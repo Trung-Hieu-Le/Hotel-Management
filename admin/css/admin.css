@@ -54,7 +54,7 @@ body {
 .sidenav {
     position: absolute;
     background-color: #0e1b3d;
-    width: 18%;
+    width: 15%;
     height: 100%;
     color: #ffffff;
 }
@@ -75,7 +75,7 @@ ul li.active{
 }
 
 .mainscreen{
-    margin-left: 18%;
+    margin-left: 15%;
 }
 
 .frames{

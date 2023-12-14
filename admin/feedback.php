@@ -1,7 +1,5 @@
-<?php
-session_start();
-include '../config.php';
-?>
+<?php include 'header.php'; ?>
+
 <?php
 if (isset($_GET['showHandle'])) {
     $id = $_GET['showHandle'];
@@ -27,12 +25,16 @@ if (isset($_GET['delete'])) {
 }
 
 ?>
-<?php include 'header.php'; ?>
-
-    <div class="room" style="top:0">
+<?php include('sidebar.php')?>
+  <div class="main-content">
+    <div class="searchsection">
+        <input type="text" name="search_bar" id="search_bar" placeholder="Nhập từ khóa tìm kiếm..." onkeyup="searchFun()">
+    </div>
+    <div class="room">
         <?php
-        $sql = "select feedback.*, user.name as username from feedback JOIN user ON feedback.user_id = user.id";
-        $re = mysqli_query($conn, $sql)
+        $sql = "select feedback.*, user.name as username from feedback JOIN user ON feedback.user_id = user.id ORDER BY feedback.id DESC";
+        $re = mysqli_query($conn, $sql);
+
         ?>
         <table class="table table-bordered" id="table-data">
             <thead>
@@ -70,5 +72,5 @@ if (isset($_GET['delete'])) {
             </tbody>
         </table>
     </div>
-
+  </div>
 <?php include 'footer.php'; ?>

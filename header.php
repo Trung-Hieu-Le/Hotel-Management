@@ -46,12 +46,22 @@ if (isset($_SESSION['userID'])) {
       <img class="bluebirdlogo" src="./image/bluebirdlogo.png" alt="logo">
       <p>SPARROW HOTEL</p>
     </div>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav mr-auto float-end mb-2">
         <li class="nav-item active">
           <a class="nav-link" href="home.php">Trang chủ</a>
         </li>
-        <li class="nav-item">
+        <?php if ($userID == true) : ?>
+          <li class="nav-item">
+            <a class="nav-link" href="reservation_modal_1.php">Đặt phòng</a>
+          </li>
+        <?php else : ?>
+          <li class="nav-item">
+            <a class="nav-link" href="./index.php" onclick="return confirm('Vui lòng đăng nhập để có thể đặt phòng')">Đặt phòng</a>
+          </li>
+        <?php endif; ?>
+        
+        <!-- <li class="nav-item">
           <a class="nav-link" href="#secondsection">Phòng</a>
         </li>
         <li class="nav-item">
@@ -59,15 +69,15 @@ if (isset($_SESSION['userID'])) {
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#fourthsection">Đánh giá</a>
-        </li>
+        </li> -->
         <?php if ($userID == true) : ?>
           <li class="dropdown">
-            <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Tài khoản
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="profile.php?id=<?php echo $userID?>">Xem hồ sơ cá nhân</a>
-              <a class="dropdown-item" href="reservation_history.php?id=<?php echo $userID?>">Xem lịch sử đặt phòng</a>
+              <a class="dropdown-item" href="profile.php">Xem hồ sơ cá nhân</a>
+              <a class="dropdown-item" href="reservation_history.php">Xem lịch sử đặt phòng</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item text-danger" href="./logout.php">Đăng xuất</a>
             </div>

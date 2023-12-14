@@ -1,10 +1,9 @@
-<?php
-include '../config.php';
-$id = $_GET['id'];
-
-
-?>
 <?php include 'header.php'; ?>
+<?php
+$id = $_GET['id'];
+?>
+<?php include('sidebar.php')?>
+  <div class="main-content">
 <div class="container">
 	<center>
 		<h1>SPARROW HOTEL - Hóa đơn #<?php echo $id ?></h1><hr>
@@ -115,7 +114,7 @@ $id = $_GET['id'];
 				echo '<div class="row">';
 				echo '<div class="col-6">';
 				echo '<p>Phương thức: ' . $row["method"] . '</p>';
-				echo '<p>Ngày thanh toán: ' . date('H:i:s d-m-Y', strtotime($row["created_at"])) . '</p>';
+				echo '<p>Ngày thanh toán: ' . date('H:i:s d/m/Y', strtotime($row["created_at"])) . '</p>';
 				echo '</div>';
 
 				echo '<div class="col-6">';
@@ -138,7 +137,7 @@ $id = $_GET['id'];
 		</a>
 		<button class="btn btn-primary">In</button>
 	</div>
-	
+</div>
 </div>
 </body>
 
