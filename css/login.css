@@ -96,13 +96,13 @@ section {
 }
 
 .role_btn .btns:hover{
-    background-image: linear-gradient(90deg, rgba(76, 185, 236, 0.527), rgba(0, 30, 255, 0.456));
+    background-color: rgba(16, 171, 206, 0.871);
     transition: ease-in-out;
     color: white;
 }
 
 .btns.active{
-    background-image: linear-gradient(90deg, rgba(76, 185, 236, 0.527), rgba(0, 30, 255, 0.456));
+    background-color: rgba(16, 101, 206, 0.871);
     color: white;
 }
 
@@ -147,7 +147,7 @@ section {
     width: 0;
     z-index: -1;
     border-radius: 10px;
-    background-image: linear-gradient(90deg, rgba(76, 185, 236, 0.527), rgba(0, 30, 255, 0.456));
+    background-image: linear-gradient(90deg, rgba(25, 169, 236, 0.788), rgba(0, 94, 255, 0.796));
     transition: all 250ms
 }
 
