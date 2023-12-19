@@ -4,7 +4,12 @@
 //Xóa
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    // TODO: sửa delete
+    // TODO: sửa delete, statusroom=1
+    $sql_delete_room = "UPDATE room JOIN chosen_room ON chosen_room.room_id = room.id
+                            JOIN reservation ON chosen_room.reservation_id = reservation.id
+                            SET room.status= 1 WHERE reservation.id = '$id' AND reservation.status = 0";
+    $result_delete_room = mysqli_query($conn, $sql_delete_room);
+    
     $deletesql = "DELETE FROM reservation WHERE id = $id";
     $result = mysqli_query($conn, $deletesql);
 

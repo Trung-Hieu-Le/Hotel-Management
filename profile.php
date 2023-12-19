@@ -21,9 +21,6 @@
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo "<p>Tên: " . $row["name"] . "</p>";
-                            // echo $row["gender"] == b'1' ? '<p>Giới tính: Nam</p>' : '<p>Giới tính: Nữ</p>';
-                            // echo "<p>Ngày sinh: " . $row["birthday"] . "</p>";
-                            // echo "<p>Căn cước công dân: " . $row["cccd"] . "</p>";
                             echo "<p>Số điện thoại: " . $row["phone"] . "</p>";
                             echo "<p>Địa chỉ: " . $row["address"] . "</p>";
                             echo "<p>Email: " . $row["email"] . "</p>";
@@ -74,7 +71,7 @@
                                                 </div>
                                                 <div class="col-6 mb-2">
                                                     <label for="email" class="form-label">Email:</label>
-                                                    <input type="text" id="email" name="email" value="<?php echo $row["email"] ?>" class="form-control">
+                                                    <input type="text" id="email" name="email" value="<?php echo $row["email"] ?>" class="form-control" required>
                                                 </div>
                                             </div>
 
@@ -84,9 +81,6 @@
                                     }
                                     if (isset($_POST['userdetailedit'])) {
                                         $EditName = $_POST['name'];
-                                        // $EditBirthday = $_POST['birthday'];
-                                        // $EditGender = $_POST['gender'];
-                                        // $EditCccd = $_POST['cccd'];
                                         $EditAddress = $_POST['address'];
                                         $EditPhone = $_POST['phone'];
                                         $EditEmail = $_POST['email'];

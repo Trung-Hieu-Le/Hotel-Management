@@ -8,9 +8,6 @@ $sql = "SELECT * FROM user WHERE id = '$id'";
 $re = mysqli_query($conn, $sql);
 while ($row = mysqli_fetch_array($re)) {
     $name = $row['name'];
-    // $birthday = $row['birthday'];
-    // $gender = $row['gender'];
-    // $cccd = $row['cccd'];
     $address = $row['address'];
     $phone = $row['phone'];
     $email = $row['email'];
@@ -19,16 +16,13 @@ while ($row = mysqli_fetch_array($re)) {
 
 if (isset($_POST['userdetailedit'])) {
     $EditName = $_POST['name'];
-    // $EditBirthday = $_POST['birthday'];
-    // $EditGender = $_POST['gender'];
-    // $EditCccd = $_POST['cccd'];
     $EditAddress = $_POST['address'];
     $EditPhone = $_POST['phone'];
     $EditEmail = $_POST['email'];
     $EditPassword = $_POST['password'];
 
    
-    $check_query = "SELECT * FROM user WHERE phone = '$phone'";
+    $check_query = "SELECT * FROM user WHERE phone = '$EditPhone' AND id <> $id";
     $check_result = mysqli_query($conn, $check_query);
     
     if (mysqli_num_rows($check_result) > 0) {

@@ -166,7 +166,7 @@ if (isset($_POST['nextModal2'])) {
                     </div>
                     <div class="modal-footer">
                         <div>
-                            <p class="text-danger mb-0">Tiền phòng: <span id="totalPriceRoom">0</span></p>
+                            <p class="text-danger mb-0">Tiền phòng: <span id="totalPriceRoom">0</span>VNĐ</p>
                             <input type="hidden" id="hiddenTotalRoom" name="total_price_room" value="">
                         </div>
                         <a href="home.php" class="btn btn-secondary">

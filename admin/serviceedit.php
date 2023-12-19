@@ -23,7 +23,7 @@ if (isset($_POST['servicedetailedit'])) {
     $EditStatus = $_POST['Status'];
 
   
-    $check_query = "SELECT * FROM service WHERE name = '$name'";
+    $check_query = "SELECT * FROM service WHERE name = '$EditName' AND id <> $id";
     $check_result = mysqli_query($conn, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {

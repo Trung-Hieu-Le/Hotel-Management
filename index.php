@@ -6,7 +6,6 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<!-- TODO: giao diện login -->
 
 <head>
     <meta charset="UTF-8">
@@ -21,35 +20,23 @@ session_start();
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <!-- loading bar -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script> -->
-    <link rel="stylesheet" href="./css/flash.css">
-    <title>Sparrow Hotel</title>
+    <!-- <link rel="stylesheet" href="./css/flash.css"> -->
+    <title>Khách sạn Xanh</title>
 </head>
 
 <body>
-    <!--  carousel -->
-    <section id="carouselExampleControls" class="carousel slide carousel_section" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img class="carousel-image" src="./image/hotel1.jpg">
-            </div>
-            <div class="carousel-item">
-                <img class="carousel-image" src="./image/hotel2.jpg">
-            </div>
-            <div class="carousel-item">
-                <img class="carousel-image" src="./image/hotel3.jpg">
-            </div>
-            <div class="carousel-item">
-                <img class="carousel-image" src="./image/hotel4.jpg">
-            </div>
+    <div class="w-50 d-none d-xl-block">
+        <div>
+        <img src="./image/index.jpg" style="height:100vh; width:100%; object-fit:cover;">
         </div>
-    </section>
+    </div>
 
     <!-- main section -->
     <section id="auth_section">
-
+    <div class="w-100">
         <div class="logo">
-            <img class="bluebirdlogo" src="./image/bluebirdlogo.png" alt="logo">
-            <p>SPARROW HOTEL</p>
+            <img class="bluebirdlogo" src="./image/bluebirdlogo2.png" alt="logo">
+            <p>KHÁCH SẠN XANH</p>
         </div>
 
         <div class="auth_container">
@@ -120,15 +107,24 @@ session_start();
                 if (isset($_POST['Emp_login_submit'])) {
                     $Phone = $_POST['emp_phone'];
                     $Password = $_POST['emp_password'];
-
                     $sql = "SELECT * FROM staff WHERE phone = '$Phone' AND password = '$Password'";
                     $result = mysqli_query($conn, $sql);
 
                     if ($result->num_rows > 0) {
-                        $_SESSION['staffID'] = mysqli_fetch_array($result)['id'];
+                        $row = mysqli_fetch_array($result);
+                        $_SESSION['staffID'] = $row['id'];
+                        $_SESSION['staffRole'] = $row['role'];
                         $_SESSION['staffPhone'] = $Phone;
                         $Phone = "";
                         $Password = "";
+                        if ($_SESSION['staffRole'] != 'Admin'){
+                            echo "<script>swal({
+                                title: 'Bạn không được cấp quyền để vào trang Quản lý!',
+                                icon: 'error',
+                            });
+                            </script>";
+                        }
+                        else{
                         echo "<script>
                         swal({
                             title: 'Đăng nhập thành công',
@@ -137,10 +133,12 @@ session_start();
                             window.location.href = 'admin/dashboard.php';
                         });
                         </script>";
-                        // header("Location: admin/admin.php");
+                        }
+
+                        
                     } else {
                         echo "<script>swal({
-                                title: 'Có lỗi xảy ra, xin vui lòng thử lại!',
+                                title: 'Sai số điện thoại hoặc mật khẩu!',
                                 icon: 'error',
                             });
                             </script>";
@@ -165,9 +163,7 @@ session_start();
             <?php
             if (isset($_POST['user_signup_submit'])) {
                 $Username = $_POST['username'];
-                // $Birthday = $_POST['birthday'];
-                // $Gender = $_POST['gender'];
-                // $Cccd = $_POST['cccd'];
+              
                 $Address = $_POST['address'];
                 $Phone = $_POST['phone'];
                 $Email = $_POST['email'];
@@ -283,23 +279,7 @@ session_start();
                         <input type="text" class="form-control" name="username" placeholder=" " required>
                         <label for="Username">Họ & tên</label>
                     </div>
-                    <!-- <div class="row">
-                        <div class="form-floating col-9">
-                            <input type="date" class="form-control" name="birthday" placeholder=" " required>
-                            <label for="Birthday" style="left:12px;">Ngày sinh</label>
-                        </div>
-                        <div class="form-floating col-3">
-                            <div>
-                                <label>Giới tính</label>
-                            </div>
-                            <input type="radio" name="gender" value="1" checked>Nam
-                            <input type="radio" name="gender" value="0">Nữ
-                        </div>
-                    </div>
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="cccd" placeholder=" " required>
-                        <label for="IdentityCard">Số CMND/CCCD</label>
-                    </div> -->
+                    
                     <div class="form-floating">
                         <input type="text" class="form-control" name="address" placeholder=" " required>
                         <label for="Address">Địa chỉ</label>
@@ -356,6 +336,7 @@ session_start();
                     </div>
                 </form>
             </div>
+        </div>
     </section>
 </body>
 
@@ -364,10 +345,5 @@ session_start();
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-<!-- aos animation-->
-<!-- <script src="https://unpkg.com/aos@next/dist/aos.js"></script> -->
-<!-- <script>
-    AOS.init();
-</script> -->
 
 </html>

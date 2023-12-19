@@ -20,7 +20,6 @@ while ($row = mysqli_fetch_array($re)) {
 }
 $room_array = array();
 $service_array = array();
-//TODO: Sửa sql
 $sql = "SELECT room_id FROM chosen_room WHERE reservation_id = '$id'";
 $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {
@@ -56,24 +55,29 @@ if (isset($_POST['guestdetailedit'])) {
     $result = mysqli_query($conn, $sql);
         
     if (isset($_POST['room']) && is_array($_POST['room'])) {
-        
+        $sql_delete_room = "UPDATE room JOIN chosen_room ON chosen_room.room_id = room.id
+                            SET status= 1 WHERE reservation_id = '$id'";
+        $result_delete_room = mysqli_query($conn, $sql_delete_room);
+
         $sql_delete = "DELETE FROM chosen_room WHERE reservation_id = '$id'";
         $result_delete = mysqli_query($conn, $sql_delete);
-            foreach ($_POST['room'] as $room_id) {
-                $sql = "INSERT INTO chosen_room (reservation_id, room_id) VALUES ('$id', '$room_id')";
-                $result2 = mysqli_query($conn, $sql);
-                $update_status_sql = "UPDATE room
-                          JOIN chosen_room ON room.id = chosen_room.room_id
-                          JOIN reservation ON chosen_room.reservation_id = reservation.id
-                          SET room.status = 
-                          CASE 
-                              WHEN reservation.status = 0 THEN 2
-                              WHEN reservation.status IN (1, 2) THEN 1
-                              ELSE room.status
-                          END
-                          WHERE room.id = '$room_id' AND reservation.id = '$id';";
-                $result3 = mysqli_query($conn, $update_status_sql);
-            } 
+    
+        foreach ($_POST['room'] as $room_id) {
+            $sql = "INSERT INTO chosen_room (reservation_id, room_id) VALUES ('$id', '$room_id')";
+            $result2 = mysqli_query($conn, $sql);
+    
+            $update_status_sql = "UPDATE room
+            JOIN chosen_room ON room.id = chosen_room.room_id
+            JOIN reservation ON chosen_room.reservation_id = reservation.id
+            SET room.status = 
+            CASE 
+                WHEN reservation.status = 0 THEN 2
+                WHEN reservation.status IN (1, 2) THEN 1
+                ELSE room.status
+            END
+            WHERE room.id = '$room_id' AND reservation.id = '$id';";
+            $result3 = mysqli_query($conn, $update_status_sql);
+        }
     }
     if (isset($_POST['service']) && is_array($_POST['service'])) {
         $sql_delete = "DELETE FROM chosen_service WHERE reservation_id = '$id'";
@@ -157,10 +161,19 @@ if (isset($_POST['guestdetailedit'])) {
                                 <label for="roomSelect" class="form-label">Phòng:</label>
                                 <select name="room[]" class="select multiselect" required style="width:100%;"
                                 multiple multiselect-search="true" multiselect-select-all="true">
-                                    <option value="" disabled>Phòng</option>
+                                    <!-- <option value="" disabled>Phòng</option> -->
                                     <?php
                                     // TODO: Sửa cái này
-                                    $roomsql = "SELECT id, name FROM room WHERE status <> 0";
+                                    $roomsql = "SELECT room.id, room.name 
+                                    FROM room 
+                                    WHERE room.status = 1 
+                                    OR room.id IN (
+                                        SELECT chosen_room.room_id 
+                                        FROM chosen_room 
+                                        INNER JOIN reservation ON chosen_room.reservation_id = reservation.id 
+                                        WHERE reservation.id = $id
+                                    )";
+
                                     $roomresult = mysqli_query($conn, $roomsql);
                                     if (mysqli_num_rows($roomresult) > 0) {
                                         while ($row = mysqli_fetch_assoc($roomresult)) {

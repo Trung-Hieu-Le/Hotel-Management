@@ -1,52 +1,49 @@
   <?php include 'header.php' ?>
 
   <body>
-    <section id="firstsection" class="carousel slide carousel_section" data-bs-ride="carousel">
+    <section id="firstsection">
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img class="carousel-image" src="./image/hotel1.jpg">
-        </div>
-        <div class="carousel-item">
-          <img class="carousel-image" src="./image/hotel2.jpg">
-        </div>
-        <div class="carousel-item">
-          <img class="carousel-image" src="./image/hotel3.jpg">
-        </div>
-        <div class="carousel-item">
-          <img class="carousel-image" src="./image/hotel4.jpg">
+          <img src="./image/homepage.webp">
         </div>
 
         <div class="welcomeline">
           <div>
-          <h2 class="welcometag">Chào mừng đến với Sparrow Hotel</h2>
+            <h2 class="welcometag">Chào mừng đến với Khách sạn Xanh</h2>
           </div>
           <div class="welcometag2">
-          <form action="reservation_modal_1.php" method="GET">
-          <div class="row">
-            <div class="col-3">
-              <label for="cin" class="form-label">Ngày nhận phòng</label>
-              <input name="cin" type="date" class="form-control" value="" required="">
-            </div>
-            <div class="col-3">
-              <label for="cout" class="form-label">Ngày trả phòng</label>
-              <input name="cout" type="date" class="form-control" value="" required="">
-            </div>
-            <div class="col-3">
-              <label for="no_guess" class="form-label">Số hành khách:</label>
-              <select name="no_guess" id="no_guess" class="form-select" required>
+            <form action="reservation_modal_1.php" method="GET">
+              <div class="row">
+                <div class="col-3">
+                  <label for="cin" class="form-label">Ngày nhận phòng</label>
+                  <input name="cin" type="date" class="form-control" value="" required="">
+                </div>
+                <div class="col-3">
+                  <label for="cout" class="form-label">Ngày trả phòng</label>
+                  <input name="cout" type="date" class="form-control" value="" required="">
+                </div>
+                <div class="col-3">
+                  <label for="no_guess" class="form-label">Số hành khách:</label>
+                  <select name="no_guess" id="no_guess" class="form-select" required>
                     <option value="" disabled selected>Chọn số hành khách</option>
                     <?php for ($i = 1; $i <= 20; $i++) : ?>
-                        <option value="<?php echo $i ?>"><?= $i ?></option>
+                      <option value="<?php echo $i ?>"><?= $i ?></option>
                     <?php endfor; ?>
-                </select>
-            </div>
-            <div class="col-3 position-relative">
-              <div class="position-absolute bottom-0">
-                <button type="submit" class="btn btn-primary" name="modal1">Tìm kiếm phòng</button>
+                  </select>
+                </div>
+                <div class="col-3 position-relative">
+                  <div class="position-absolute bottom-0">
+                    <?php if ($userID == true) : ?>
+                      <button type="submit" class="btn btn-success" name="modal1">Tìm kiếm phòng</button>
+                    <?php else : ?>
+                      <a href="index.php" onclick="return confirm('Vui lòng đăng nhập để có thể đặt phòng')"><button class='btn btn-success'>Tìm kiếm phòng</button></a>
+                    <?php endif; ?>
+
+                    <!-- <button type="submit" class="btn btn-primary" name="modal1">Tìm kiếm phòng</button> -->
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          </form>
+            </form>
           </div>
         </div>
 
@@ -61,59 +58,7 @@
         <h1 class="head">
           << Phòng>>
         </h1>
-        <!-- TODO: Chi tiết -->
-        <!-- <div class="roomselect">
-          <div class="roombox">
-            <div class="hotelphoto h1" style="background-image: url(./image/hotel1photo.webp);"></div>
-            <div class="roomdata">
-              <h2>Superior Room</h2>
-              <div class="services">
-                <i class="fa-solid fa-wifi"></i>
-                <i class="fa-solid fa-burger"></i>
-                <i class="fa-solid fa-spa"></i>
-                <i class="fa-solid fa-dumbbell"></i>
-                <i class="fa-solid fa-person-swimming"></i>
-              </div>
-              <button class="btn btn-primary bookbtn">Chi tiết</button>
-            </div>
-          </div>
-          <div class="roombox">
-            <div class="hotelphoto h2" style="background-image: url(./image/hotel2photo.jpg);"></div>
-            <div class="roomdata">
-              <h2>Delux Room</h2>
-              <div class="services">
-                <i class="fa-solid fa-wifi"></i>
-                <i class="fa-solid fa-burger"></i>
-                <i class="fa-solid fa-spa"></i>
-                <i class="fa-solid fa-dumbbell"></i>
-              </div>
-              <button class="btn btn-primary bookbtn">Chi tiết</button>
-            </div>
-          </div>
-          <div class="roombox">
-            <div class="hotelphoto h3" style="background-image: url(./image/hotel3photo.avif);"></div>
-            <div class="roomdata">
-              <h2>Guest Room</h2>
-              <div class="services">
-                <i class="fa-solid fa-wifi"></i>
-                <i class="fa-solid fa-burger"></i>
-                <i class="fa-solid fa-spa"></i>
-              </div>
-              <button class="btn btn-primary bookbtn">Chi tiết</button>
-            </div>
-          </div>
-          <div class="roombox">
-            <div class="hotelphoto h4" style="background-image: url(./image/hotel4photo.jpg);"></div>
-            <div class="roomdata">
-              <h2>Single Room</h2>
-              <div class="services">
-                <i class="fa-solid fa-wifi"></i>
-                <i class="fa-solid fa-burger"></i>
-              </div>
-              <button class="btn btn-primary bookbtn">Chi tiết</button>
-            </div>
-          </div>
-        </div> -->
+        
         <div class=" owl-carousel owl-theme p-3">
           <?php
           $sql = "SELECT * FROM room_type WHERE status = 1";
@@ -159,7 +104,7 @@
         if ($result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
         ?>
-            <div class="item bg-light" style="background-image: url(./image/service/<?php echo $row["image"]; ?>); height:320px;">
+            <div class="item bg-light" style="background-image: url(./image/service/<?php echo $row["image"]; ?>); height: 350px; background-size: cover; background-position: center;">
               <p class="bg-dark text-center text-light py-2"><?php echo $row['name']; ?></p>
             </div>
         <?php
@@ -204,9 +149,10 @@
     </section>
     <section id="contactus">
       <div class="social">
-        <i class="fa-brands fa-instagram"></i>
-        <i class="fa-brands fa-facebook"></i>
-        <i class="fa-solid fa-envelope"></i>
+        <i class="fa-brands fa-youtube" onclick="return confirm('Sang trang Youtube của Khách sạn Xanh?')"></i>
+        <i class="fa-brands fa-facebook" onclick="return confirm('Sang trang Facebook của Khách sạn Xanh?')"></i>
+        <i class="fa-brands fa-instagram" onclick="return confirm('Sang trang Instagram của Khách sạn Xanh?')"></i>
+        <i class="fa-solid fa-envelope" onclick="return confirm('Gửi E-mail đến Khách sạn Xanh?')"></i>
       </div>
     </section>
   </body>

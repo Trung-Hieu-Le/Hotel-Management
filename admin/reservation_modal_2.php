@@ -115,12 +115,11 @@ if (isset($_POST['reservationSubmit'])) {
 
                             
                             ?>
-                            <!-- TODO: Sửa multi select -->
                             <div>
                                 <label for="serviceSelect" class="form-label">Dịch vụ:</label>
                                 <select name="service[]" class="select multiselect" id="multiService" style="width:100%;"
                                 multiple multiselect-search="true" multiselect-select-all="true">
-                                    <option value="" disabled>Dịch vụ</option>
+                                    <!-- <option value="" disabled>Dịch vụ</option> -->
                                     <?php
                                     $servicesql = "SELECT id, name, price FROM service WHERE status = 1";
                                     $serviceresult = mysqli_query($conn, $servicesql);
@@ -148,10 +147,10 @@ if (isset($_POST['reservationSubmit'])) {
                     </div>
                     <div class="modal-footer">
                     <div class="float-left">
-                        <p class="text-danger mb-0">Tiền phòng: <span><?php echo $_GET["total_price_room"] ?></span></p>
-                        <p class="text-danger mb-0">Tiền dịch vụ: <span id="totalPriceService">0</span></p>
+                        <p class="text-danger mb-0">Tiền phòng: <span><?php echo $_GET["total_price_room"] ?></span>VNĐ</p>
+                        <p class="text-danger mb-0">Tiền dịch vụ: <span id="totalPriceService">0</span>VNĐ</p>
                         <hr style="margin: 0.25rem 0; color:red;">
-                        <p class="text-danger mb-0">Tổng tiền dự tính: <span id="totalPrice">0</span></p>
+                        <p class="text-danger mb-0">Tổng tiền dự tính: <span id="totalPrice">0</span>VNĐ</p>
                     </div>
                         <a href="reservation_modal_1.php" class="btn btn-secondary">
                             Quay lại

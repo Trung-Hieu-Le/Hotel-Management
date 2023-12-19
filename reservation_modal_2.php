@@ -93,9 +93,6 @@ if (isset($_POST['reservationSubmit'])) {
 
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         echo "<p>Họ tên: " . $row["name"] . "</p>";
-                                        // echo $row["gender"] == b'1' ? '<p>Giới tính: Nam</p>' : '<p>Giới tính: Nữ</p>';
-                                        // echo "<p>Ngày sinh: " . $row["birthday"] . "</p>";
-                                        // echo "<p>Căn cước công dân: " . $row["cccd"] . "</p>";
                                         echo "<p>Số điện thoại: " . $row["phone"] . "</p>";
                                         echo "<p>Địa chỉ: " . $row["address"] . "</p>";
                                         echo "<p>Email: " . $row["email"] . "</p>";
@@ -112,7 +109,6 @@ if (isset($_POST['reservationSubmit'])) {
                             <?php 
                                 echo "<p>Ngày nhận phòng: ".date('d-m-Y', strtotime($_GET["cin"]))."</p>";
                                 echo "<p>Ngày trả phòng: ".date('d-m-Y', strtotime($_GET["cout"]))."</p>";
-                                // TODO: Số hành khách khi thay đổi
                                 echo "<p>Số hành khách: ".$_GET["no_guess"]."</p>";
                                 echo "<p>Số phòng: ".$_GET["no_room"]."</p>";
                             ?>
@@ -140,10 +136,10 @@ if (isset($_POST['reservationSubmit'])) {
                     </div>
                     <div class="modal-footer">
                     <div class="float-left">
-                        <p class="text-danger mb-0">Tiền phòng: <span><?php echo $_GET["total_price_room"] ?></span></p>
-                        <p class="text-danger mb-0">Tiền dịch vụ: <span id="totalPriceService">0</span></p>
+                        <p class="text-danger mb-0">Tiền phòng: <span><?php echo $_GET["total_price_room"] ?></span>VNĐ</p>
+                        <p class="text-danger mb-0">Tiền dịch vụ: <span id="totalPriceService">0</span>VNĐ</p>
                         <hr style="margin: 0.25rem 0; color:red;">
-                        <p class="text-danger mb-0">Tổng tiền dự tính: <span id="totalPrice">0</span></p>
+                        <p class="text-danger mb-0">Tổng tiền dự tính: <span id="totalPrice">0</span>VNĐ</p>
                     </div>
                         <a href="reservation_modal_1.php" class="btn btn-secondary">
                             Quay lại

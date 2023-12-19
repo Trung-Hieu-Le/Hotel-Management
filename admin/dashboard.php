@@ -11,10 +11,10 @@
     $roombookre = mysqli_query($conn, $roombooksql);
     $roombookrow = mysqli_num_rows($roombookre);
 
-    // staff
-    $staffsql ="Select * from staff";
-    $staffre = mysqli_query($conn, $staffsql);
-    $staffrow = mysqli_num_rows($staffre);
+    // reservation
+    $reservationsql ="Select * from reservation";
+    $reservationre = mysqli_query($conn, $reservationsql);
+    $reservationrow = mysqli_num_rows($reservationre);
 
     // room
     $roomsql ="Select * from room where status <> 0";
@@ -38,31 +38,42 @@
 					$chart_data = substr($chart_data, 0, -2);
 
 
-        $query = "SELECT status, COUNT(*) as total FROM reservation GROUP BY status";
-        $result = mysqli_query($conn, $query);
-
-        $statusData = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-          // Lưu số lượng của mỗi loại status vào mảng $statusData
-          $statusData[] = $row['total'];
-        }
+          $query = "SELECT status, COUNT(*) as total FROM reservation GROUP BY status";
+          $result = mysqli_query($conn, $query);
+          
+          $statusData = [];
+          while ($row = mysqli_fetch_assoc($result)) {
+              switch ($row['status']) {
+                  case 0:
+                      $statusData['Chưa thanh toán'] = $row['total'];
+                      break;
+                  case 1:
+                      $statusData['Đã thanh toán'] = $row['total'];
+                      break;
+                  case 2:
+                      $statusData['Hủy đặt phòng'] = $row['total'];
+                      break;
+                  default:
+                      break;
+              }
+          }
+          
 ?>
 
-<!-- TODO: Style dashboard -->
   <?php include('sidebar.php')?>
   <div class="main-content">
    <div class="databox">
         <div class="box roombookbox">
-          <h2>Tổng số phòng được đặt</h1>  
+          <h3>Tổng số phòng được đặt</h3> 
           <h1><?php echo $roombookrow ?> / <?php echo $roomrow ?></h1>
         </div>
         <div class="box guestbox">
-        <h2>Tổng số nhân viên</h1>  
-          <h1><?php echo $staffrow ?></h1>
+        <h3>Tổng số đơn đặt phòng</h3>  
+          <h1><?php echo $reservationrow ?></h1>
         </div>
         <div class="box profitbox">
-        <h2>Doanh thu</h1>  
-          <h1>$<?php echo $tot?></h1>
+        <h3>Doanh thu</h3>  
+          <h1><?php echo number_format("$tot")?> VNĐ</h1>
         </div>
     </div>
     <div class="chartbox">
@@ -81,37 +92,33 @@
 
 
 <script>
-    // Các nhãn (labels) và màu sắc cho từng loại status
-    const labels = [
-        'Chưa thanh toán',
-        'Đã thanh toán',
-        'Hủy đặt phòng'
-    ];
+    const labels = Object.keys(<?php echo json_encode($statusData); ?>);
 
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: 'Số đơn đặt phòng',
-            backgroundColor: [
-              'rgba(51, 153, 225, 1)',
-              'rgba(51, 255, 51, 1)',
-              'rgba(255, 51, 51, 1)',
-            ],
-            borderColor: 'black',
-            data: <?php echo json_encode($statusData); ?>, 
-        }]
-    };
+const data = {
+    labels: labels,
+    datasets: [{
+        label: 'Số đơn đặt phòng',
+        backgroundColor: [
+            'rgba(51, 153, 225, 1)',
+            'rgba(51, 255, 51, 1)',
+            'rgba(255, 51, 51, 1)',
+        ],
+        borderColor: 'black',
+        data: Object.values(<?php echo json_encode($statusData); ?>), 
+    }]
+};
 
-    const doughnutChart = {
-        type: 'doughnut',
-        data: data,
-        options: {} 
-    };
+const doughnutChart = {
+    type: 'doughnut',
+    data: data,
+    options: {} 
+};
 
-    const myChart = new Chart(
-        document.getElementById('bookroomchart'),
-        doughnutChart
-    );
+const myChart = new Chart(
+    document.getElementById('bookroomchart'),
+    doughnutChart
+);
+
 </script>
 
 

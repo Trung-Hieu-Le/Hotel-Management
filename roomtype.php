@@ -20,7 +20,7 @@ $result_others = mysqli_query($conn, $sql_others);
             <img src="./image/room_type/<?php echo $row_current['image']; ?>" alt="<?php echo $row_current['name']; ?>" style="width: 100%; border:1px solid black; ">
             <h4>Mô tả:</h4>
             <p><?php echo $row_current['description']; ?></p>
-            <h4>Giá: $<?php echo $row_current['price']; ?>/ngày</h4>
+            <h4>Giá: <?php echo number_format($row_current['price']); ?>VNĐ/ngày</h4>
             <div class="d-flex justify-content-center">
                 <?php if ($userID == true) : ?>
                     <a href="reservation_modal_1.php">

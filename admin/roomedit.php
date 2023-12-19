@@ -29,7 +29,7 @@ if (isset($_POST['roomdetailedit'])) {
     //     </script>";
     // }
     // else {
-    $check_query = "SELECT * FROM room WHERE name = '$name'";
+    $check_query = "SELECT * FROM room WHERE name = '$EditName' AND id <> $id";
     $check_result = mysqli_query($conn, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {
@@ -65,7 +65,7 @@ if (isset($_POST['roomdetailedit'])) {
                     <div class="col-lg-4">
                         <label for="image">Loại phòng:</label>
                         <select name="RoomType" class="form-control">
-                            <option selected>Loại phòng</option>
+                            <option disabled>Loại phòng</option>
                             <?php
                             $roomtypesql = "SELECT id, name FROM room_type";
                             $roomtyperesult = mysqli_query($conn, $roomtypesql);

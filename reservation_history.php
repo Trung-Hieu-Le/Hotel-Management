@@ -41,6 +41,7 @@ if (isset($_GET['cancel'])) {
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Số phòng</th>
+                    <th scope="col">Danh sách phòng</th>
                     <th scope="col">Số khách</th>
                     <th scope="col">Ngày nhận phòng</th>
                     <th scope="col">Ngày trả phòng</th>
@@ -52,13 +53,27 @@ if (isset($_GET['cancel'])) {
 
             <tbody>
                 <?php
-                $sql = "select * from reservation where user_id='$userID'";
+                $sql = "SELECT reservation.*, GROUP_CONCAT(room.name SEPARATOR ', ') AS listroom FROM reservation 
+                    LEFT JOIN chosen_room ON reservation.id = chosen_room.reservation_id
+                    LEFT JOIN room ON chosen_room.room_id = room.id
+                    WHERE user_id='$userID'
+                    GROUP BY reservation.id ORDER BY reservation.id DESC";
                 $re = mysqli_query($conn, $sql);
                 while ($res = mysqli_fetch_array($re)) {
                 ?>
                     <tr style="height:80px;">
                         <td><?php echo $res['id'] ?></td>
                         <td><?php echo $res['no_room'] ?></td>
+                        <td>
+                            <?php
+
+                            if (isset($res['listroom'])) {
+                                echo $res['listroom'];
+                            } else {
+                                echo '';
+                            }
+                            ?>
+                        </td>
                         <td><?php echo $res['no_guess'] ?></td>
                         <td><?php echo $res['check_in'] ?></td>
                         <td><?php echo $res['check_out'] ?></td>

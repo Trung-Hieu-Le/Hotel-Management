@@ -143,7 +143,7 @@ if (isset($_POST['nextModal2'])) {
                                 <tr>
                                     <td><?php echo $row["name"] ?></td>
                                     <td><img src='../image/room_type/<?php echo $row["image"]; ?>' style="width:100px; margin-bottom:10px;"></td>
-                                    <td><?php echo $row["price"]; ?></td>
+                                    <td><?php echo number_format($row["price"]); ?></td>
                                     <td><?php echo $row["no_bed"]; ?></td>
                                     <td><?php echo $row["room_type"]; ?></td>
                                     <td><input type='checkbox' name='selected_room[]' value=<?php echo $row["id"]?> data-price='<?php echo $row["price"] ?>'></td>
@@ -158,7 +158,7 @@ if (isset($_POST['nextModal2'])) {
                 </div>
                 <div class="modal-footer">
                     <div>
-                        <p class="text-danger mb-0">Tiền phòng: <span id="totalPriceRoom">0</span></p>
+                        <p class="text-danger mb-0">Tiền phòng: <span id="totalPriceRoom">0</span>VNĐ</p>
                         <input type="hidden" id="hiddenTotalRoom" name="total_price_room" value="">
                     </div>
                     <a href="reservation.php" class="btn btn-secondary">

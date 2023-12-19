@@ -25,7 +25,7 @@ if (isset($_POST['staffdetailedit'])) {
     $EditPassword = $_POST['password'];
 
   
-    $check_query = "SELECT * FROM staff WHERE phone = '$phone'";
+    $check_query = "SELECT * FROM staff WHERE phone = '$EditPhone' AND id <> $id";
     $check_result = mysqli_query($conn, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {

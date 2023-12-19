@@ -122,7 +122,7 @@
                         <td><?php echo $res['name'] ?></td>
                         <td><img src='../image/room_type/<?php echo $res["image"]; ?>' style="width:100px; height:100px;"></td>
                         <td><?php echo $res['description'] ?></td>
-                        <td><?php echo $res['price'] ?></td>
+                        <td><?php echo number_format($res['price']) ?></td>
                         <td><?php echo $res['status'] == 0 ? 'Không hoạt động' : 'Hoạt động'; ?></td> 
                         <td class="action">
                             <a href="roomtypeedit.php?id=<?php echo $res['id'] ?>"><button class="btn btn-primary">Sửa</button></a>

@@ -155,7 +155,7 @@ ul li a:hover{
     line-height: 100px;
     padding: 5px;
     /* text gradiant */
-    background: -webkit-linear-gradient(317deg, rgba(0, 60, 255, 0.81) 0%, rgb(255 0 123) 70%);
+    background: -webkit-linear-gradient(317deg, rgba(0, 34, 255, 0.81) 0%, rgb(1, 107, 255) 70%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -212,18 +212,6 @@ ul li a:hover{
 
 .owl-theme .owl-dots .owl-dot{ display:none!important;}
 
-/* .h1{
-    background-image: url(../image/hotel1photo.webp);
-}
-.h2{
-    background-image: url(../image/hotel2photo.jpg);
-}
-.h3{
-    background-image: url(../image/hotel3photo.avif);
-}
-.h4{
-    background-image: url(../image/hotel4photo.jpg);
-} */
 
 .roomdata{
     text-align: center;
@@ -311,27 +299,6 @@ font-size: 30px;
     background-color: #0000005e;
 }
 
-.box:nth-child(1){
-    background-image: url(../image/swimingpool.jpg);
-    background-size: cover;
-}
-.box:nth-child(2){
-    background-image: url(../image/spa.jpg);
-    background-size: cover;
-}
-.box:nth-child(3){
-    background-image: url(../image/food.jpg);
-    background-size: cover;
-}
-.box:nth-child(4){
-    background-image: url(../image/gym.jpg);
-    background-size: cover;
-}
-.box:nth-child(5){
-    background-image: url(../image/heli.jpg);
-    background-size: cover
-}
-
 #contactus{
     height: 70px;
     width: 100%;
@@ -369,69 +336,6 @@ font-size: 30px;
     nav ul{
         display: none;
     }
-    /* #firstsection{
-        height: 50vh;
-        text-align: center;
-    }
-    #firstsection .carousel-inner{
-        height: 50vh;
-    }
-    #firstsection .carousel-inner::after{
-        height: 50vh;
-    }
-    #firstsection .carousel-item img{
-        height: 50vh;
-    }
-    #firstsection .welcomeline{
-        height: 50vh;
-        
-    }
-    #firstsection .welcometag{
-        text-align: center;
-        font-size: 50px;
-        line-height: 60px;
-    }
-    #secondsection{
-        height: auto;
-    }
-    #secondsection{
-        height: 240vh;
-    }
-    #secondsection img{
-        display: none;
-    }
-    .ourroom{
-        top: 30px;
-        height: auto;
-    }
-    .roomselect{
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-    .roomselect .roombox{
-        width: 75%;
-    }
-
-
-    #thirdsection{
-        height: 100vh;
-    }
-    .facility{
-        height: 70%;
-        flex-wrap: wrap;
-    }
-    .facility .box{
-        margin: 0;
-        padding: 0;
-        height: 55%;
-        width: 50%; 
-    }
-
-    .facility .box h2{
-        font-size: 18px;
-        flex-wrap: wrap;
-    } */
     
     .box:nth-child(5){
         display: none;

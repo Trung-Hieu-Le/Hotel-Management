@@ -25,16 +25,15 @@ if (isset($_GET['add'])) {
 
     $method = $_GET['method'];
     $final_total = $room_total + $service_total;
+    
+    // TODO: Sửa cái này
+    $update_status_sql = "UPDATE room JOIN chosen_room ON chosen_room.room_id = room.id
+    JOIN reservation ON chosen_room.reservation_id = reservation.id
+    SET room.status= 1 WHERE reservation.id = '$id' AND reservation.status = 0";
+    $update_status_result = mysqli_query($conn, $update_status_sql);
     $sql = "UPDATE reservation SET status = 1 WHERE id = '$id'";
     $result = mysqli_query($conn, $sql);
-    // TODO: Sửa cái này
-    $update_status_sql = "UPDATE room
-    JOIN chosen_room ON room.id = chosen_room.room_id
-    JOIN reservation ON chosen_room.reservation_id = reservation.id
-    SET room.status = 1
-    WHERE reservation.id = '$id';";
-    $update_status_result = mysqli_query($conn, $update_status_sql);
-
+    
     if ($result) {
         $result_delete_payment = "DELETE FROM payment WHERE reservation_id = $id";
         $result_delete_payment = mysqli_query($conn, $result_delete_payment);
@@ -66,7 +65,7 @@ if (isset($_GET['add'])) {
 
     <div class="room">
         <?php
-            $paymanttablesql = "SELECT *, user.name FROM payment 
+            $paymanttablesql = "SELECT payment.*, user.name FROM payment 
                                 JOIN reservation ON reservation.id=payment.reservation_id 
                                 JOIN user ON reservation.user_id = user.id
                                 ORDER BY payment.created_at DESC";
@@ -96,13 +95,12 @@ if (isset($_GET['add'])) {
             <?php
             while ($res = mysqli_fetch_array($paymantresult)) {
             ?>
-            <!-- TODO: Hiện mã, user, total -->
                 <tr>
                     <td><?php echo $res['reservation_id'] ?></td>
                     <td><?php echo $res['name'] ?></td>
-                    <td><?php echo $res['room_total'] ?></td>
-					<td><?php echo $res['service_total'] ?></td>
-					<td><?php echo $res['final_total'] ?></td>
+                    <td><?php echo number_format($res['room_total']) ?></td>
+					<td><?php echo number_format($res['service_total']) ?></td>
+					<td><?php echo number_format($res['final_total']) ?></td>
                     <td><?php echo $res['method'] ?></td>
 					<td><?php echo date('H:i:s d/m/Y', strtotime($res["created_at"])) ?></td>
                     <td class="action">

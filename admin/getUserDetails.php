@@ -12,9 +12,6 @@ $result = mysqli_query($conn, $sql);
 if ($result && mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     echo "<p>Họ tên: " . $row["name"] . "</p>";
-    // echo $row["gender"] == b'1' ? '<p>Giới tính: Nam</p>' : '<p>Giới tính: Nữ</p>';
-    // echo "<p>Ngày sinh: " . $row["birthday"] . "</p>";
-    // echo "<p>Căn cước công dân: " . $row["cccd"] . "</p>";
     echo "<p>Số điện thoại: " . $row["phone"] . "</p>";
     echo "<p>Địa chỉ: " . $row["address"] . "</p>";
     echo "<p>Email: " . $row["email"] . "</p>";

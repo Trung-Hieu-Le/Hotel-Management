@@ -4,9 +4,9 @@ $id = $_GET['id'];
 ?>
 <?php include('sidebar.php')?>
   <div class="main-content">
-<div class="container">
+<div style="max-width:900px; margin:auto;">
 	<center>
-		<h1>SPARROW HOTEL - Hóa đơn #<?php echo $id ?></h1><hr>
+		<h1>Khách sạn Xanh - Hóa đơn #<?php echo $id ?></h1><hr>
 	</center>
 	<div>
 		<h3 class="fw-bolder">Thông tin khách hàng</h3>
@@ -58,7 +58,7 @@ $id = $_GET['id'];
 				echo '</div>';
 				// echo "<p>Ngày đặt phòng: " . date('H:m:s d-m-Y', strtotime($row["created_at"])) . "</p>";
 			}
-			$sql = "SELECT room.name, room_type.name as room_type
+			$sql = "SELECT room.name, room_type.name as room_type, room_type.price
             FROM reservation
             JOIN chosen_room ON reservation.id = chosen_room.reservation_id
             JOIN room ON chosen_room.room_id = room.id
@@ -67,19 +67,17 @@ $id = $_GET['id'];
 
 			$result = $conn->query($sql) or die($conn->error);
 
-			if (
-				mysqli_num_rows($result) > 0
-			) {
+			if (mysqli_num_rows($result) > 0) {
 				echo "<h3 class='fw-bolder'>Danh sách các phòng đã đặt:</h3>";
 				echo "<ul>";
 				while ($row = mysqli_fetch_assoc($result)) {
-					echo "<li>Phòng " . $row["name"] . " - Loại phòng: " . $row["room_type"] . "</li>";
+					echo "<li>Phòng " . $row["name"] . " - Loại phòng: " . $row["room_type"] . " - Giá: ". number_format($row["price"]) ."VNĐ/ngày</li>";
 				}
 				echo "</ul>";
 			} else {
 				echo "Không có phòng được đặt.";
 			}
-			$sql = "SELECT service.name
+			$sql = "SELECT service.name, service.price
         FROM service
         JOIN chosen_service ON service.id = chosen_service.service_id
         JOIN reservation ON chosen_service.reservation_id = reservation.id
@@ -87,15 +85,14 @@ $id = $_GET['id'];
 
 			$result = $conn->query($sql) or die($conn->error);
 
-			if (
-				mysqli_num_rows($result) > 0
-			) {
-				echo "<h3 class='fw-bolder'>Danh sách các dịch vụ đã sử dụng:</h3>";
-				$services = array();
+			echo "<h3 class='fw-bolder'>Danh sách các dịch vụ đã sử dụng:</h3>";
+			if (mysqli_num_rows($result) > 0) {
+				
+				echo "<ul>";
 				while ($row = mysqli_fetch_assoc($result)) {
-					$services[] = $row["name"];
+					echo "<li>Dịch vụ: " . $row["name"] . " - Giá: ". number_format($row["price"]) ."VNĐ/người</li>";
 				}
-				echo implode(", ", $services);
+				echo "</ul>";
 			} else {
 				echo "Không có dịch vụ sử dụng.";
 			}
@@ -118,9 +115,9 @@ $id = $_GET['id'];
 				echo '</div>';
 
 				echo '<div class="col-6">';
-				echo '<p class="text-danger">Tiền phòng: ' . $row["room_total"] . '</p>';
-				echo '<p class="text-danger">Tiền dịch vụ: ' . $row["service_total"] . '</p>';
-				echo '<p class="text-danger">Tổng cộng: ' . $row["final_total"] . '</p>';
+				echo '<p class="text-danger">Tiền phòng: ' . number_format($row["room_total"]) . 'VNĐ</p>';
+				echo '<p class="text-danger">Tiền dịch vụ: ' . number_format($row["service_total"]) . 'VNĐ</p>';
+				echo '<p class="text-danger">Tổng cộng: ' . number_format($row["final_total"]) . 'VNĐ</p>';
 				echo '</div>';
 
 				echo '</div>';

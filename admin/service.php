@@ -123,7 +123,7 @@ if (isset($_POST['addservice'])) {
                     <td><?php echo $res['id'] ?></td>
                     <td><?php echo $res['name'] ?></td>
                     <td><img src='../image/service/<?php echo $res["image"]; ?>' style="width:100px; height:100px;"></td>
-                    <td><?php echo $res['price'] ?></td>
+                    <td><?php echo number_format($res['price']) ?></td>
                     <td><?php echo $res['description'] ?></td>
                     <td><?php echo $res['status'] == 0 ? 'Không hoạt động' : 'Hoạt động'; ?></td>
                     <td class="action">

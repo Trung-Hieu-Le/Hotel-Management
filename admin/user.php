@@ -11,9 +11,6 @@
         //Thêm
         if (isset($_POST['adduser'])) {
             $name = $_POST['name'];
-            // $birthday = $_POST['birthday'];
-            // $gender = $_POST['gender'];
-            // $cccd = $_POST['cccd'];
             $address = $_POST['address'];
             $phone = $_POST['phone'];
             $email = $_POST['email'];
@@ -71,22 +68,6 @@
                     <label for="phone">Địa chỉ:</label><br>
                     <input type="text" name="address" class="form-control">
                 </div>
-                
-            </div>
-            <div class="row h-100">
-                <!-- <div class="col-lg-4">
-                    <label for="phone">Ngày sinh:</label>
-                    <input type="date" name="birthday" class="form-control">
-                </div>
-                <div class="col-lg-4">
-                    <label for="phone">Giới tính:</label><br>
-                    <input type="radio" name="gender" value="1" checked>Nam
-                    <input type="radio" name="gender" value="0">Nữ
-                </div> -->
-                <!-- <div class="col-lg-4">
-                    <label for="username">CCCD:</label>
-                    <input type="text" name="cccd" class="form-control" required>
-                </div> -->
                 
             </div>
             <div class="row h-100">

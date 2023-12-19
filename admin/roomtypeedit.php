@@ -21,7 +21,12 @@ if (isset($_POST['roomtypedetailedit'])) {
     $EditPrice = $_POST['price'];
     $EditStatus = $_POST['status'];
 
-    
+    $check_query = "SELECT * FROM room_type WHERE name = '$EditName' AND id <> $id";
+    $check_result = mysqli_query($conn, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo "<script>alert('Loại phòng đã tồn tại');</script>";
+    } else {
     $sql = "UPDATE room_type SET name = '$EditName', image = '$EditImage', description = '$EditDescription', status = b'$EditStatus', price = '$EditPrice' WHERE id = '$id'";
     $result = mysqli_query($conn, $sql);
     if ($result) {
@@ -30,6 +35,7 @@ if (isset($_POST['roomtypedetailedit'])) {
     } else {
         echo "<script>alert('Lỗi khi sửa loại phòng');</script>";
     }
+}
 }
 
 ?>
