@@ -121,7 +121,8 @@ if (isset($_POST['guestdetailedit'])) {
                                     $userresult = mysqli_query($conn, $usersql);
                                     if (mysqli_num_rows($userresult) > 0) {
                                         while ($row = mysqli_fetch_assoc($userresult)) {
-                                            echo "<option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
+                                            $selected = ($userID == $row["id"]) ? 'selected' : '';
+                                            echo "<option value='" . $row["id"] . "' $selected>" . $row["name"] . "</option>";
                                         }
                                     }
                                     ?>

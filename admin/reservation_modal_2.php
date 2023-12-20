@@ -146,12 +146,7 @@ if (isset($_POST['reservationSubmit'])) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                    <div class="float-left">
-                        <p class="text-danger mb-0">Tiền phòng: <span><?php echo $_GET["total_price_room"] ?></span>VNĐ</p>
-                        <p class="text-danger mb-0">Tiền dịch vụ: <span id="totalPriceService">0</span>VNĐ</p>
-                        <hr style="margin: 0.25rem 0; color:red;">
-                        <p class="text-danger mb-0">Tổng tiền dự tính: <span id="totalPrice">0</span>VNĐ</p>
-                    </div>
+                    
                         <a href="reservation_modal_1.php" class="btn btn-secondary">
                             Quay lại
                         </a>
@@ -161,12 +156,7 @@ if (isset($_POST['reservationSubmit'])) {
             </div>
         </div>
     </div>
-<!-- <script src="./javascript/roombook.js"></script> -->
-<!-- <script>
-    document.getElementById('addCustomerBtn').addEventListener('click', function() {
-        window.location.href = 'user.php?showAddUserModal=true';
-    });
-</script> -->
+
 <?php include 'footer.php' ?>
 <script>
 document.querySelector('.select').addEventListener('change', function() {
@@ -185,25 +175,4 @@ document.querySelector('.select').addEventListener('change', function() {
     xhr.open('GET', 'getUserDetails.php?userId=' + selectedUserId, true);
     xhr.send();
 });
-</script>
-<script>
-    const totalRoom = parseInt("<?php echo $_GET['total_price_room']; ?>");
-    const multiService = document.getElementById('multiService');
-    let total = totalRoom;
-    document.getElementById('totalPrice').textContent = total;
-    multiService.addEventListener('change', updateTotalService);
-
-    function updateTotalService() {
-        const selectedServices = multiService.selectedOptions;
-        let totalService = 0;
-        for (const option of selectedServices) {
-        totalService += parseInt(option.getAttribute('data-price'));
-        }
-        const noGuess = parseInt("<?php echo $_GET['no_guess']; ?>");
-        const totalServiceWithGuest = totalService * noGuess;
-        console.log(totalServiceWithGuest);
-        const total = totalRoom + totalServiceWithGuest;
-        document.getElementById('totalPriceService').textContent = totalServiceWithGuest;
-        document.getElementById('totalPrice').textContent = total;
-}
 </script>

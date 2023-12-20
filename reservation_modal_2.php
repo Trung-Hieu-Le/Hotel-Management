@@ -135,12 +135,12 @@ if (isset($_POST['reservationSubmit'])) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                    <div class="float-left">
+                    <!-- <div class="float-left">
                         <p class="text-danger mb-0">Tiền phòng: <span><?php echo $_GET["total_price_room"] ?></span>VNĐ</p>
                         <p class="text-danger mb-0">Tiền dịch vụ: <span id="totalPriceService">0</span>VNĐ</p>
                         <hr style="margin: 0.25rem 0; color:red;">
                         <p class="text-danger mb-0">Tổng tiền dự tính: <span id="totalPrice">0</span>VNĐ</p>
-                    </div>
+                    </div> -->
                         <a href="reservation_modal_1.php" class="btn btn-secondary">
                             Quay lại
                         </a>
@@ -151,7 +151,7 @@ if (isset($_POST['reservationSubmit'])) {
         </div>
     </div>
 </body>
-<script>
+<!-- <script>
     const totalRoom = parseInt("<?php echo $_GET['total_price_room']; ?>");
     const multiService = document.getElementById('multiService');
     let total = totalRoom;
@@ -171,5 +171,5 @@ if (isset($_POST['reservationSubmit'])) {
         document.getElementById('totalPriceService').textContent = totalServiceWithGuest;
         document.getElementById('totalPrice').textContent = total;
 }
-</script>
+</script> -->
 <?php include 'footer.php' ?>

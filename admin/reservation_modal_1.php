@@ -157,10 +157,10 @@ if (isset($_POST['nextModal2'])) {
                     <?php } ?>
                 </div>
                 <div class="modal-footer">
-                    <div>
+                    <!-- <div>
                         <p class="text-danger mb-0">Tiền phòng: <span id="totalPriceRoom">0</span>VNĐ</p>
                         <input type="hidden" id="hiddenTotalRoom" name="total_price_room" value="">
-                    </div>
+                    </div> -->
                     <a href="reservation.php" class="btn btn-secondary">
                         Quay lại trang chính
                     </a>
@@ -174,7 +174,7 @@ if (isset($_POST['nextModal2'])) {
     </div>
 </body>
 <!-- <script src="./javascript/roombook.js"></script> -->
-<script>
+<!-- <script>
     const checkboxes = document.querySelectorAll('input[name="selected_room[]"]');
     checkboxes.forEach((checkbox) => {
         checkbox.addEventListener('change', updateTotalRoom);
@@ -190,5 +190,5 @@ if (isset($_POST['nextModal2'])) {
         document.getElementById('totalPriceRoom').textContent = totalRoom;
         document.getElementById('hiddenTotalRoom').value = totalRoom;
     }
-</script>
+</script> -->
 </html>

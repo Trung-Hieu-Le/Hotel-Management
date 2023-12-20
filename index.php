@@ -311,7 +311,7 @@ session_start();
             <div id="change_password">
                 <h2>Đổi mật khẩu</h2>
 
-                <form class="user_change_password" id="usersignup" action="" method="POST">
+                <form class="user_change_password" action="" method="POST">
                     <div class="form-floating">
                         <input type="text" class="form-control" name="phone" placeholder=" " required pattern="[0-9]+" title="Nhập số từ 0-9">
                         <label for="Phone">Số điện thoại</label>
