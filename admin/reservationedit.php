@@ -55,8 +55,9 @@ if (isset($_POST['guestdetailedit'])) {
     $result = mysqli_query($conn, $sql);
         
     if (isset($_POST['room']) && is_array($_POST['room'])) {
+        // TODO: status reservation
         $sql_delete_room = "UPDATE room JOIN chosen_room ON chosen_room.room_id = room.id
-                            SET status= 1 WHERE reservation_id = '$id'";
+                            SET status= 1 WHERE reservation_id = '$id' AND reservation.status = 0";
         $result_delete_room = mysqli_query($conn, $sql_delete_room);
 
         $sql_delete = "DELETE FROM chosen_room WHERE reservation_id = '$id'";
