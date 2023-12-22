@@ -190,7 +190,7 @@ if (isset($_POST['guestdetailedit'])) {
                                 <label for="serviceSelect" class="form-label">Dịch vụ:</label>
                                 <select name="service[]" class="select multiselect" id="multiService" style="width:100%;"
                                 multiple multiselect-search="true" multiselect-select-all="true">
-                                    <option value="" disabled>Dịch vụ</option>
+                                    <!-- <option value="" disabled>Dịch vụ</option> -->
                                     <?php
                                     $servicesql = "SELECT id, name FROM service WHERE status = 1";
                                     $serviceresult = mysqli_query($conn, $servicesql);
